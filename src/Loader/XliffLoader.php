@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the PHP Translation package.
+ *
+ * (c) PHP Translation team <tobias.nyholm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Translation\SymfonyStorage\Loader;
 
 use Nyholm\NSA;
@@ -15,9 +24,9 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
 class XliffLoader extends XliffFileLoader
 {
     /**
-     * @param string $content xml content
+     * @param string           $content   xml content
      * @param MessageCatalogue $catalogue
-     * @param string $domain
+     * @param string           $domain
      */
     public function extractFromContent($content, MessageCatalogue $catalogue, $domain)
     {
@@ -38,7 +47,6 @@ class XliffLoader extends XliffFileLoader
             NSA::invokeMethod($this, 'extractXliff2', $dom, $catalogue, $domain);
         }
     }
-
 
     /**
      * Loads an XML file.
@@ -121,7 +129,7 @@ class XliffLoader extends XliffFileLoader
 
     private function getXmlErrors($internalErrors)
     {
-        $errors = array();
+        $errors = [];
         foreach (libxml_get_errors() as $error) {
             $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
                 LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
