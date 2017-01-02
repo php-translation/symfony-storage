@@ -45,6 +45,10 @@ class XliffConverter
     {
         $dumper = new XliffFileDumper();
 
-        return $dumper->formatCatalogue($catalogue, $domain);
+        if (method_exists($dumper, 'formatCatalogue')) {
+            return $dumper->formatCatalogue($catalogue, $domain);
+        }
+
+        return $dumper->format($catalogue, $domain);
     }
 }
