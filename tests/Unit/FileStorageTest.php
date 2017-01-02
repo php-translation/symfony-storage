@@ -9,12 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Translation\SymfonyStorage\Tests;
+namespace Translation\SymfonyStorage\Tests\Unit;
 
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\SymfonyStorage\FileStorage;
 
+/**
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
 class FileStorageTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructor()
