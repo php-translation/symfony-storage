@@ -55,6 +55,10 @@ final class FileStorage implements Storage
             throw new \LogicException('Second parameter of FileStorage must be a Symfony translation loader or implement Translation\SymfonyStorage\TranslationLoader');
         }
 
+        if (empty($dir)) {
+            throw new \LogicException('Third parameter of FileStorage cannot be empty');
+        }
+
         $this->writer = $writer;
         $this->loader = $loader;
         $this->dir = $dir;

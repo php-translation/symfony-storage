@@ -22,8 +22,19 @@ env:
     - SYMFONY_VERSION=3.2.*
     - SYMFONY_VERSION=2.7.*
 
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci" SYMFONY_VERSION=2.7.*
+
 install:
-    - travis_retry composer update --prefer-dist --no-interaction
+    - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
+    - travis_retry composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
 
 script:
     - $TEST_COMMAND
+
+after_success:
+    - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+    - if [[ $COVERAGE = true ]]; then php ocular.phar code-coverage:upload --format=php-clover build/coverage.xml; fi
