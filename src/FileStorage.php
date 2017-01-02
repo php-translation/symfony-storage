@@ -30,12 +30,12 @@ final class FileStorage implements Storage
     private $writer;
 
     /**
-     * @var TranslationLoader
+     * @var TranslationLoader|SymfonyTranslationLoader
      */
     private $loader;
 
     /**
-     * @var string directory path
+     * @var array directory path
      */
     private $dir;
 
@@ -121,7 +121,7 @@ final class FileStorage implements Storage
     {
         $resources = $catalogue->getResources();
         foreach ($resources as $resource) {
-            $path = $resource->getResource();
+            $path = (string) $resource;
             if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
                 $this->writer->writeTranslations($catalogue, $matches[1], ['path' => str_replace($matches[0], '', $path)]);
             }

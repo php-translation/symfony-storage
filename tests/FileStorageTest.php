@@ -19,7 +19,7 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $storage = new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
     }
 
     /**
@@ -27,7 +27,7 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorInvalidLoader()
     {
-        $storage = new FileStorage(new TranslationWriter(), new TranslationWriter(), ['foo']);
+        new FileStorage(new TranslationWriter(), new TranslationWriter(), ['foo']);
     }
 
     /**
@@ -35,6 +35,6 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorEmptyArray()
     {
-        $storage = new FileStorage(new TranslationWriter(), new TranslationLoader(), []);
+        new FileStorage(new TranslationWriter(), new TranslationLoader(), []);
     }
 }
