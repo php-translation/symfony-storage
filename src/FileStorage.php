@@ -13,16 +13,18 @@ namespace Translation\SymfonyStorage;
 
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader as SymfonyTranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
+use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
 use Translation\Common\Storage;
+use Translation\Common\TransferableStorage;
 
 /**
  * This storage uses Symfony's writer and loader.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-final class FileStorage implements Storage
+final class FileStorage implements Storage, TransferableStorage
 {
     /**
      * @var TranslationWriter
@@ -70,7 +72,6 @@ final class FileStorage implements Storage
     public function get($locale, $domain, $key)
     {
         $catalogue = $this->getCatalogue($locale);
-
         $translation = $catalogue->get($key, $domain);
 
         return new Message($key, $domain, $locale, $translation);
@@ -109,6 +110,26 @@ final class FileStorage implements Storage
 
         $catalogue->replace($messages, $domain);
         $this->writeCatalogue($catalogue, $locale, $domain);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export(MessageCatalogueInterface $catalogue)
+    {
+        $locale = $catalogue->getLocale();
+        $catalogue->addCatalogue($this->getCatalogue($locale));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function import(MessageCatalogueInterface $catalogue)
+    {
+        $domains = $catalogue->getDomains();
+        foreach ($domains as $domain) {
+            $this->writeCatalogue($catalogue, $catalogue->getLocale(), $domain);
+        }
     }
 
     /**
