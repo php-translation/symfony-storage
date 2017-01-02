@@ -30,12 +30,12 @@ final class FileStorage implements Storage
     private $writer;
 
     /**
-     * @var TranslationLoader
+     * @var TranslationLoader|SymfonyTranslationLoader
      */
     private $loader;
 
     /**
-     * @var string directory path
+     * @var array directory path
      */
     private $dir;
 
