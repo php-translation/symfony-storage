@@ -21,7 +21,7 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-final class XliffLoader extends XliffFileLoader
+class XliffLoader extends XliffFileLoader
 {
     /**
      * @param string           $content   xml content
