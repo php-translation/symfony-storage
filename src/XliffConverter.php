@@ -11,6 +11,7 @@
 
 namespace Translation\SymfonyStorage;
 
+use Nyholm\NSA;
 use Symfony\Component\Translation\Dumper\XliffFileDumper;
 use Symfony\Component\Translation\MessageCatalogue;
 use Translation\SymfonyStorage\Loader\XliffLoader;
@@ -49,6 +50,6 @@ class XliffConverter
             return $dumper->formatCatalogue($catalogue, $domain);
         }
 
-        return $dumper->format($catalogue, $domain);
+        return NSA::invokeMethod($dumper, 'dump', $catalogue, $domain);
     }
 }
