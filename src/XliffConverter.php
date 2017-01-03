@@ -15,7 +15,12 @@ use Symfony\Component\Translation\MessageCatalogue;
 use Translation\SymfonyStorage\Dumper\XliffDumper;
 use Translation\SymfonyStorage\Loader\XliffLoader;
 
-class XliffConverter
+/**
+ * Utility class to convert between a MessageCatalogue and XLIFF file content.
+ *
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
+final class XliffConverter
 {
     /**
      * Create a catalogue from the contents of a XLIFF file.

@@ -17,7 +17,7 @@ use Symfony\Component\Translation\MessageCatalogue;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class XliffDumper extends XliffFileDumper
+final class XliffDumper extends XliffFileDumper
 {
     /**
      * Alias for formatCatalogue to provide a BC bridge.
