@@ -50,6 +50,6 @@ class XliffConverter
             return $dumper->formatCatalogue($catalogue, $domain);
         }
 
-        return NSA::invokeMethod($dumper, 'dump', $catalogue, $domain);
+        return NSA::invokeMethod($dumper, 'format', $catalogue, $domain);
     }
 }
