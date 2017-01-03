@@ -28,7 +28,7 @@ final class XliffDumper extends XliffFileDumper
      *
      * @return string
      */
-    public function getFormattedCatalogue(MessageCatalogue $messages, $domain, array $options = array())
+    public function getFormattedCatalogue(MessageCatalogue $messages, $domain, array $options = [])
     {
         if (method_exists($this, 'formatCatalogue')) {
             return parent::formatCatalogue($messages, $domain, $options);

@@ -36,14 +36,13 @@ final class XliffLoader extends XliffFileLoader
             throw new InvalidResourceException(sprintf('Unable to load data: %s', $e->getMessage()), $e->getCode(), $e);
         }
 
-        $xliffVersion = '1.2';
-        if (method_exists($this, 'getVersionNumber')) {
-            $xliffVersion = NSA::invokeMethod($this, 'getVersionNumber', $dom);
+        if (!method_exists($this, 'getVersionNumber')) {
+            // Symfony 2.7
+            throw new \RuntimeException('Cannot use XliffLoader::extractFromContent with Symfony 2.7');
         }
 
-        if (method_exists($this, 'validateSchema')) {
-            NSA::invokeMethod($this, 'validateSchema', $xliffVersion, $dom, NSA::invokeMethod($this, 'getSchema', $xliffVersion));
-        }
+        $xliffVersion = NSA::invokeMethod($this, 'getVersionNumber', $dom);
+        NSA::invokeMethod($this, 'validateSchema', $xliffVersion, $dom, NSA::invokeMethod($this, 'getSchema', $xliffVersion));
 
         if ('1.2' === $xliffVersion) {
             NSA::invokeMethod($this, 'extractXliff1', $dom, $catalogue, $domain);
