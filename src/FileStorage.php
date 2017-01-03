@@ -47,9 +47,9 @@ final class FileStorage implements Storage, TransferableStorage
     private $catalogues;
 
     /**
-     * @param TranslationWriter $writer
-     * @param mixed             $loader
-     * @param array             $dir
+     * @param TranslationWriter                          $writer
+     * @param SymfonyTranslationLoader|TranslationLoader $loader
+     * @param array                                      $dir
      */
     public function __construct(TranslationWriter $writer, $loader, array $dir)
     {
