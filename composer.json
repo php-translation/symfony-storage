@@ -1,6 +1,6 @@
 {
     "name": "php-translation/symfony-storage",
-    "description": "Adapter for Symfony storage.",
+    "description": "A translation file storage using Symfony translation component.",
     "license": "MIT",
     "authors": [
         {
