@@ -42,6 +42,11 @@ final class FileStorage implements Storage, TransferableStorage
     private $dir;
 
     /**
+     * @var array with option to the dumper
+     */
+    private $options;
+
+    /**
      * @var MessageCatalogue[] Fetched catalogies
      */
     private $catalogues;
@@ -50,8 +55,9 @@ final class FileStorage implements Storage, TransferableStorage
      * @param TranslationWriter                          $writer
      * @param SymfonyTranslationLoader|TranslationLoader $loader
      * @param array                                      $dir
+     * @param array                                      $options
      */
-    public function __construct(TranslationWriter $writer, $loader, array $dir)
+    public function __construct(TranslationWriter $writer, $loader, array $dir, array $options = [])
     {
         if (!$loader instanceof SymfonyTranslationLoader && !$loader instanceof TranslationLoader) {
             throw new \LogicException('Second parameter of FileStorage must be a Symfony translation loader or implement Translation\SymfonyStorage\TranslationLoader');
@@ -64,6 +70,7 @@ final class FileStorage implements Storage, TransferableStorage
         $this->writer = $writer;
         $this->loader = $loader;
         $this->dir = $dir;
+        $this->options = $options;
     }
 
     /**
@@ -141,10 +148,12 @@ final class FileStorage implements Storage, TransferableStorage
     private function writeCatalogue(MessageCatalogue $catalogue, $locale, $domain)
     {
         $resources = $catalogue->getResources();
+        $options = $this->options;
         foreach ($resources as $resource) {
             $path = (string) $resource;
             if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
-                $this->writer->writeTranslations($catalogue, $matches[1], ['path' => str_replace($matches[0], '', $path)]);
+                $options['path'] = str_replace($matches[0], '', $path);
+                $this->writer->writeTranslations($catalogue, $matches[1], $options);
             }
         }
     }
