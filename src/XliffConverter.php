@@ -47,7 +47,7 @@ final class XliffConverter
      *
      * @return string
      */
-    public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options)
+    public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
     {
         $dumper = new XliffDumper();
 
