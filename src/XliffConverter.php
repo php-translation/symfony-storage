@@ -43,13 +43,14 @@ final class XliffConverter
     /**
      * @param MessageCatalogue $catalogue
      * @param string           $domain
+     * @param array            $options
      *
      * @return string
      */
-    public static function catalogueToContent(MessageCatalogue $catalogue, $domain)
+    public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
     {
         $dumper = new XliffDumper();
 
-        return $dumper->getFormattedCatalogue($catalogue, $domain);
+        return $dumper->getFormattedCatalogue($catalogue, $domain, $options);
     }
 }
