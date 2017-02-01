@@ -2,6 +2,19 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+
+## 0.2.2
+
+### Added
+
+- Support for options in `XliFfConverter`
+
+## 0.2.1
+
+### Added
+
+- Support for options in `FileStorage`
+
 ## 0.2.0
 
 ### Added
