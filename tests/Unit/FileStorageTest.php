@@ -61,7 +61,6 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
         $storage = new FileStorage($writer, new TranslationLoader(), ['foo']);
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
 
-
         $writer = $this->getMockBuilder(TranslationWriter::class)
             ->setMethods(['writeTranslations'])
             ->disableOriginalConstructor()
