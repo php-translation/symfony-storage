@@ -71,10 +71,10 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'format',
-                ['path' => 'bar', 'default_output_format'=>'format']
+                ['path' => 'bar', 'default_output_format' => 'format']
             );
 
-        $storage = new FileStorage($writer, new TranslationLoader(), ['bar'], ['default_output_format'=>'format']);
+        $storage = new FileStorage($writer, new TranslationLoader(), ['bar'], ['default_output_format' => 'format']);
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
     }
 
