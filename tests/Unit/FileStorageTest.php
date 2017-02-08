@@ -77,7 +77,6 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
     }
 
-
     public function testCreateExistingCatalogue()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
