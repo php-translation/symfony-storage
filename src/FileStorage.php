@@ -149,13 +149,24 @@ final class FileStorage implements Storage, TransferableStorage
     {
         $resources = $catalogue->getResources();
         $options = $this->options;
+        $written = false;
         foreach ($resources as $resource) {
             $path = (string) $resource;
             if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
                 $options['path'] = str_replace($matches[0], '', $path);
                 $this->writer->writeTranslations($catalogue, $matches[1], $options);
+                $written = true;
             }
         }
+
+        if ($written) {
+            // We have written the translation to a file.
+            return;
+        }
+
+        $options['path'] = reset($this->dir);
+        $format = isset($options['default_output_format']) ? $options['default_output_format'] : 'xlf';
+        $this->writer->writeTranslations($catalogue, $format, $options);
     }
 
     /**
