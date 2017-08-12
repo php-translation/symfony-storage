@@ -11,7 +11,9 @@
 
 namespace Translation\SymfonyStorage\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
+use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
@@ -21,11 +23,12 @@ use Translation\SymfonyStorage\Loader\XliffLoader;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class FileStorageTest extends \PHPUnit_Framework_TestCase
+class FileStorageTest extends TestCase
 {
     public function testConstructor()
     {
-        new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        $storage = new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        $this->assertInstanceOf(FileStorage::class, $storage);
     }
 
     /**
@@ -88,13 +91,135 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => __DIR__]
+                ['path' => $this->getFixturePath()]
             );
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, ['foo', __DIR__]);
+        $storage = new FileStorage($writer, $loader, ['foo', $this->getFixturePath()]);
 
         $storage->create(new Message('key', 'messages', 'en', 'Translation'));
+    }
+
+    public function testGet()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
+
+        $this->assertEquals('Bazbar', $storage->get('en', 'messages', 'test_1')->getTranslation());
+
+        // Missing locale
+        $this->assertEquals('test_1', $storage->get('sv', 'messages', 'test_1')->getTranslation());
+
+        // Missing domain
+        $this->assertEquals('test_1', $storage->get('en', 'xx', 'test_1')->getTranslation());
+
+        // Missing key
+        $this->assertEquals('miss', $storage->get('en', 'messages', 'miss')->getTranslation());
+    }
+
+    public function testUpdate()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $writer->expects($this->exactly(2))
+            ->method('writeTranslations')
+            ->with(
+                $this->isInstanceOf(MessageCatalogueInterface::class),
+                'xlf',
+                ['path' => $this->getFixturePath()]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
+
+        $storage->update(new Message('key', 'messages', 'en', 'Translation'));
+        $storage->update(new Message('test_1', 'messages', 'en', 'Translation'));
+    }
+
+    public function testDelete()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $writer->expects($this->once())
+            ->method('writeTranslations')
+            ->with(
+                $this->callback(function (MessageCatalogueInterface $catalogue) {
+                    return !$catalogue->defines('test_0', 'messages');
+                }),
+                'xlf',
+                ['path' => $this->getFixturePath()]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
+
+        $storage->delete('en', 'messages', 'test_0');
+    }
+
+    public function testImport()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $writer->expects($this->once())
+            ->method('writeTranslations')
+            ->with(
+                $this->callback(function (MessageCatalogueInterface $catalogue) {
+                    return $catalogue->defines('test_4711', 'messages');
+                }),
+                'xlf',
+                ['path' => $this->getFixturePath()]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
+        $catalogue = new MessageCatalogue('en', ['messages' => ['test_4711' => 'foobar']]);
+
+        $storage->import($catalogue);
+    }
+
+    public function testExport()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
+
+        $catalogue = new MessageCatalogue('en');
+        $storage->export($catalogue);
+        $this->assertTrue($catalogue->defines('test_0', 'messages'));
+        $this->assertTrue($catalogue->defines('test_1', 'messages'));
+
+        // Wrong locale
+        $catalogue = new MessageCatalogue('sv');
+        $storage->export($catalogue);
+        $this->assertFalse($catalogue->defines('test_0', 'messages'));
+    }
+
+    /**
+     * @return string
+     */
+    private function getFixturePath()
+    {
+        return realpath(__DIR__.'/../Fixtures/single-file');
     }
 }
