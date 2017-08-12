@@ -12,6 +12,7 @@
 namespace Translation\SymfonyStorage\Tests\Unit;
 
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
+use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
@@ -96,5 +97,120 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
         $storage = new FileStorage($writer, $loader, ['foo', __DIR__]);
 
         $storage->create(new Message('key', 'messages', 'en', 'Translation'));
+    }
+
+    public function testGet()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [__DIR__]);
+
+        $this->assertEquals('Bazbar', $storage->get('en', 'messages', 'test_1')->getTranslation());
+
+        // Missing locale
+        $this->assertEquals('test_1', $storage->get('sv', 'messages', 'test_1')->getTranslation());
+
+        // Missing domain
+        $this->assertEquals('test_1', $storage->get('en', 'xx', 'test_1')->getTranslation());
+
+        // Missing key
+        $this->assertEquals('miss', $storage->get('en', 'messages', 'miss')->getTranslation());
+    }
+
+    public function testUpdate()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $writer->expects($this->exactly(2))
+            ->method('writeTranslations')
+            ->with(
+                $this->isInstanceOf(MessageCatalogueInterface::class),
+                'xlf',
+                ['path' => __DIR__]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [__DIR__]);
+
+        $storage->update(new Message('key', 'messages', 'en', 'Translation'));
+        $storage->update(new Message('test_1', 'messages', 'en', 'Translation'));
+    }
+
+    public function testDelete()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $writer->expects($this->once())
+            ->method('writeTranslations')
+            ->with(
+                $this->callback(function(MessageCatalogueInterface $catalogue) {
+                   return !$catalogue->defines('test_0', 'messages');
+                }),
+                'xlf',
+                ['path' => __DIR__]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [__DIR__]);
+
+        $storage->delete('en', 'messages', 'test_0');
+    }
+
+    public function testImport()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->setMethods(['writeTranslations'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $writer->expects($this->once())
+            ->method('writeTranslations')
+            ->with(
+                $this->callback(function(MessageCatalogueInterface $catalogue) {
+                   return $catalogue->defines('test_4711', 'messages');
+                }),
+                'xlf',
+                ['path' => __DIR__]
+            );
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $catalogue = new MessageCatalogue('en', ['messages'=>['test_4711'=>'foobar']]);
+
+        $storage->import($catalogue);
+    }
+
+    public function testExport()
+    {
+        $writer = $this->getMockBuilder(TranslationWriter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+
+        $loader = new TranslationLoader();
+        $loader->addLoader('xlf', new XliffLoader());
+        $storage = new FileStorage($writer, $loader, [__DIR__]);
+
+        $catalogue = new MessageCatalogue('en');
+        $storage->export($catalogue);
+        $this->assertTrue($catalogue->defines('test_0', 'messages'));
+        $this->assertTrue($catalogue->defines('test_1', 'messages'));
+
+        // Wrong locale
+        $catalogue = new MessageCatalogue('sv');
+        $storage->export($catalogue);
+        $this->assertFalse($catalogue->defines('test_0', 'messages'));
     }
 }
