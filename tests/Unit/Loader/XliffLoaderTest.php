@@ -12,6 +12,7 @@
 namespace Translation\SymfonyStorage\Tests\Unit\Loader;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\MessageCatalogue;
 use Translation\SymfonyStorage\Loader\XliffLoader;
@@ -48,6 +49,10 @@ class XliffLoaderTest extends TestCase
 
     public function testXliff12()
     {
+        if (Kernel::VERSION_ID < 20800) {
+            $this->markTestSkipped('Symfony <2.8 is not supported. ');
+        }
+
         $content = file_get_contents(__DIR__.'/../../Fixtures/single-file/messages.en.xlf');
         $catalogue = new MessageCatalogue('en');
         (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
@@ -57,6 +62,10 @@ class XliffLoaderTest extends TestCase
 
     public function testXliff20()
     {
+        if (Kernel::VERSION_ID < 20800) {
+            $this->markTestSkipped('Symfony <2.8 is not supported. ');
+        }
+
         $content = <<<'XML'
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0"
  srcLang="en-US" trgLang="sv">

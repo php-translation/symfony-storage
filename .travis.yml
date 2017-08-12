@@ -26,7 +26,9 @@ matrix:
   fast_finish: true
   include:
     - php: 5.5
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci" SYMFONY_VERSION=2.7.*
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci" SYMFONY_VERSION=2.8.*
+    - php: 7.0
+      env: SYMFONY_VERSION=3.0.*
 
 install:
     - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
