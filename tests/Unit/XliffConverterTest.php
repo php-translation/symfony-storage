@@ -11,6 +11,7 @@
 
 namespace Translation\SymfonyStorage\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\MessageCatalogue;
 use Translation\SymfonyStorage\XliffConverter;
@@ -18,7 +19,7 @@ use Translation\SymfonyStorage\XliffConverter;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class XliffConverterTest extends \PHPUnit_Framework_TestCase
+class XliffConverterTest extends TestCase
 {
     public function testContentToCatalogue()
     {
@@ -26,7 +27,7 @@ class XliffConverterTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Symfony <2.8 is not supported. ');
         }
 
-        $content = file_get_contents(__DIR__.'/messages.en.xlf');
+        $content = file_get_contents(__DIR__.'/../Fixtures/single-file/messages.en.xlf');
         $catalogue = XliffConverter::contentToCatalogue($content, 'en', 'messages');
 
         $this->assertEquals('en', $catalogue->getLocale());

@@ -11,6 +11,7 @@
 
 namespace Translation\SymfonyStorage\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
@@ -22,11 +23,12 @@ use Translation\SymfonyStorage\Loader\XliffLoader;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class FileStorageTest extends \PHPUnit_Framework_TestCase
+class FileStorageTest extends TestCase
 {
     public function testConstructor()
     {
-        new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        $storage = new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        $this->assertInstanceOf(FileStorage::class, $storage);
     }
 
     /**
@@ -89,12 +91,12 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => __DIR__]
+                ['path' => $this->getFixturePath()]
             );
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, ['foo', __DIR__]);
+        $storage = new FileStorage($writer, $loader, ['foo', $this->getFixturePath()]);
 
         $storage->create(new Message('key', 'messages', 'en', 'Translation'));
     }
@@ -107,7 +109,7 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $this->assertEquals('Bazbar', $storage->get('en', 'messages', 'test_1')->getTranslation());
 
@@ -132,12 +134,12 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => __DIR__]
+                ['path' => $this->getFixturePath()]
             );
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $storage->update(new Message('key', 'messages', 'en', 'Translation'));
         $storage->update(new Message('test_1', 'messages', 'en', 'Translation'));
@@ -157,12 +159,12 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
                    return !$catalogue->defines('test_0', 'messages');
                 }),
                 'xlf',
-                ['path' => __DIR__]
+                ['path' => $this->getFixturePath()]
             );
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $storage->delete('en', 'messages', 'test_0');
     }
@@ -181,12 +183,12 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
                    return $catalogue->defines('test_4711', 'messages');
                 }),
                 'xlf',
-                ['path' => __DIR__]
+                ['path' => $this->getFixturePath()]
             );
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
         $catalogue = new MessageCatalogue('en', ['messages'=>['test_4711'=>'foobar']]);
 
         $storage->import($catalogue);
@@ -201,7 +203,7 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
-        $storage = new FileStorage($writer, $loader, [__DIR__]);
+        $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $catalogue = new MessageCatalogue('en');
         $storage->export($catalogue);
@@ -212,5 +214,13 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
         $catalogue = new MessageCatalogue('sv');
         $storage->export($catalogue);
         $this->assertFalse($catalogue->defines('test_0', 'messages'));
+    }
+
+    /**
+     * @return string
+     */
+    private function getFixturePath(): string
+    {
+        return realpath(__DIR__.'/../Fixtures/single-file');
     }
 }
