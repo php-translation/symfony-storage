@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the PHP Translation package.
+ *
+ * (c) PHP Translation team <tobias.nyholm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Translation\SymfonyStorage\Tests\Unit\Loader;
 
 use PHPUnit\Framework\TestCase;
@@ -48,7 +57,7 @@ class XliffLoaderTest extends TestCase
 
     public function testXliff20()
     {
-        $content=<<<XML
+        $content = <<<'XML'
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0"
  srcLang="en-US" trgLang="sv">
  <file id="f1" original="Example">

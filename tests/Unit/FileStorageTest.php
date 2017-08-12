@@ -155,8 +155,8 @@ class FileStorageTest extends TestCase
         $writer->expects($this->once())
             ->method('writeTranslations')
             ->with(
-                $this->callback(function(MessageCatalogueInterface $catalogue) {
-                   return !$catalogue->defines('test_0', 'messages');
+                $this->callback(function (MessageCatalogueInterface $catalogue) {
+                    return !$catalogue->defines('test_0', 'messages');
                 }),
                 'xlf',
                 ['path' => $this->getFixturePath()]
@@ -179,8 +179,8 @@ class FileStorageTest extends TestCase
         $writer->expects($this->once())
             ->method('writeTranslations')
             ->with(
-                $this->callback(function(MessageCatalogueInterface $catalogue) {
-                   return $catalogue->defines('test_4711', 'messages');
+                $this->callback(function (MessageCatalogueInterface $catalogue) {
+                    return $catalogue->defines('test_4711', 'messages');
                 }),
                 'xlf',
                 ['path' => $this->getFixturePath()]
@@ -189,7 +189,7 @@ class FileStorageTest extends TestCase
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
-        $catalogue = new MessageCatalogue('en', ['messages'=>['test_4711'=>'foobar']]);
+        $catalogue = new MessageCatalogue('en', ['messages' => ['test_4711' => 'foobar']]);
 
         $storage->import($catalogue);
     }
@@ -199,7 +199,6 @@ class FileStorageTest extends TestCase
         $writer = $this->getMockBuilder(TranslationWriter::class)
             ->disableOriginalConstructor()
             ->getMock();
-
 
         $loader = new TranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
