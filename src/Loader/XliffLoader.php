@@ -61,14 +61,13 @@ class XliffLoader extends XliffFileLoader
      * @author Fabien Potencier <fabien@symfony.com>
      * @author Martin Hasoň <martin.hason@gmail.com>
      *
-     * @param string               $content          An XML file path
-     * @param string|callable|null $schemaOrCallable An XSD schema file path, a callable, or null to disable validation
+     * @param string $content An XML file path
      *
      * @return \DOMDocument
      *
      * @throws \InvalidArgumentException When loading of XML file returns error
      */
-    private function loadFileContent($content, $schemaOrCallable = null)
+    private function loadFileContent($content)
     {
         if ('' === trim($content)) {
             throw new \InvalidArgumentException('Content does not contain valid XML, it is empty.');
@@ -94,35 +93,6 @@ class XliffLoader extends XliffFileLoader
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
                 throw new \InvalidArgumentException('Document types are not allowed.');
-            }
-        }
-
-        if (null !== $schemaOrCallable) {
-            $internalErrors = libxml_use_internal_errors(true);
-            libxml_clear_errors();
-
-            $e = null;
-            if (is_callable($schemaOrCallable)) {
-                try {
-                    $valid = call_user_func($schemaOrCallable, $dom, $internalErrors);
-                } catch (\Exception $e) {
-                    $valid = false;
-                }
-            } elseif (!is_array($schemaOrCallable) && is_file((string) $schemaOrCallable)) {
-                $schemaSource = file_get_contents((string) $schemaOrCallable);
-                $valid = @$dom->schemaValidateSource($schemaSource);
-            } else {
-                libxml_use_internal_errors($internalErrors);
-
-                throw new \InvalidArgumentException('The schemaOrCallable argument has to be a valid path to XSD file or callable.');
-            }
-
-            if (!$valid) {
-                $messages = $this->getXmlErrors($internalErrors);
-                if (empty($messages)) {
-                    $messages = ['The XML is not valid.'];
-                }
-                throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
             }
         }
 
