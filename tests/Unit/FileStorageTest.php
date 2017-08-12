@@ -218,7 +218,7 @@ class FileStorageTest extends TestCase
     /**
      * @return string
      */
-    private function getFixturePath(): string
+    private function getFixturePath()
     {
         return realpath(__DIR__.'/../Fixtures/single-file');
     }
