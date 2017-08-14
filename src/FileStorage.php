@@ -67,6 +67,11 @@ final class FileStorage implements Storage, TransferableStorage
             throw new \LogicException('Third parameter of FileStorage cannot be empty');
         }
 
+        if (!array_key_exists('xliff_version', $options)) {
+            // Set default value for xliff version.
+            $options['xliff_version'] = '2.0';
+        }
+
         $this->writer = $writer;
         $this->loader = $loader;
         $this->dir = $dir;

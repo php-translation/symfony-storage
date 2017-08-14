@@ -58,7 +58,7 @@ class FileStorageTest extends TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => 'foo']
+                ['path' => 'foo', 'xliff_version' => '2.0']
             );
 
         $storage = new FileStorage($writer, new TranslationLoader(), ['foo']);
@@ -73,7 +73,7 @@ class FileStorageTest extends TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'format',
-                ['path' => 'bar', 'default_output_format' => 'format']
+                ['path' => 'bar', 'default_output_format' => 'format', 'xliff_version' => '2.0']
             );
 
         $storage = new FileStorage($writer, new TranslationLoader(), ['bar'], ['default_output_format' => 'format']);
@@ -91,7 +91,7 @@ class FileStorageTest extends TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => $this->getFixturePath()]
+                ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
         $loader = new TranslationLoader();
@@ -134,7 +134,7 @@ class FileStorageTest extends TestCase
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
-                ['path' => $this->getFixturePath()]
+                ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
         $loader = new TranslationLoader();
@@ -159,7 +159,7 @@ class FileStorageTest extends TestCase
                     return !$catalogue->defines('test_0', 'messages');
                 }),
                 'xlf',
-                ['path' => $this->getFixturePath()]
+                ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
         $loader = new TranslationLoader();
@@ -183,7 +183,7 @@ class FileStorageTest extends TestCase
                     return $catalogue->defines('test_4711', 'messages');
                 }),
                 'xlf',
-                ['path' => $this->getFixturePath()]
+                ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
         $loader = new TranslationLoader();
