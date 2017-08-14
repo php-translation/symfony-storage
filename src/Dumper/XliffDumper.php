@@ -17,7 +17,7 @@ use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
 /**
  * XliffFileDumper generates xliff files from a message catalogue.
- * Mostly borrowed from Symfony
+ * Mostly borrowed from Symfony.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Michel Salib <michelsalib@hotmail.com>
@@ -27,7 +27,7 @@ final class XliffDumper extends FileDumper
     /**
      * {@inheritdoc}
      */
-    public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = array())
+    public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = [])
     {
         $xliffVersion = '1.2';
         if (array_key_exists('xliff_version', $options)) {
@@ -60,9 +60,9 @@ final class XliffDumper extends FileDumper
         return 'xlf';
     }
 
-    private function dumpXliff1($defaultLocale, MessageCatalogue $messages, $domain, array $options = array())
+    private function dumpXliff1($defaultLocale, MessageCatalogue $messages, $domain, array $options = [])
     {
-        $toolInfo = array('tool-id' => 'symfony', 'tool-name' => 'Symfony');
+        $toolInfo = ['tool-id' => 'symfony', 'tool-name' => 'Symfony'];
         if (array_key_exists('tool_info', $options)) {
             $toolInfo = array_merge($toolInfo, $options['tool_info']);
         }
@@ -139,7 +139,7 @@ final class XliffDumper extends FileDumper
         return $dom->saveXML();
     }
 
-    private function dumpXliff2($defaultLocale, MessageCatalogue $messages, $domain, array $options = array())
+    private function dumpXliff2($defaultLocale, MessageCatalogue $messages, $domain, array $options = [])
     {
         $dom = new \DOMDocument('1.0', 'utf-8');
         $dom->formatOutput = true;
@@ -201,7 +201,7 @@ final class XliffDumper extends FileDumper
     }
 
     /**
-     * @param string $key
+     * @param string     $key
      * @param array|null $metadata
      *
      * @return bool
