@@ -44,15 +44,15 @@ class XliffLoader extends XliffFileLoader
 
         if (method_exists($this, 'getVersionNumber')) {
             $xliffVersion = NSA::invokeMethod($this, 'getVersionNumber', $dom);
+            NSA::invokeMethod($this, 'validateSchema', $xliffVersion, $dom, NSA::invokeMethod($this, 'getSchema', $xliffVersion));
         } else {
             // Symfony 2.7
             if (null === $this->sfPort) {
                 $this->sfPort = new SymfonyPort();
             }
             $xliffVersion = $this->sfPort->getVersionNumber($dom);
+            $this->sfPort->validateSchema($xliffVersion, $dom, $this->sfPort->getSchema($xliffVersion));
         }
-
-        NSA::invokeMethod($this, 'validateSchema', $xliffVersion, $dom, NSA::invokeMethod($this, 'getSchema', $xliffVersion));
 
         if ('1.2' === $xliffVersion) {
             NSA::invokeMethod($this, 'extractXliff1', $dom, $catalogue, $domain);

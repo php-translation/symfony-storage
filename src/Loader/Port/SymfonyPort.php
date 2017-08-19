@@ -11,6 +11,7 @@
 
 namespace Translation\SymfonyStorage\Loader\Port;
 
+use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
@@ -94,6 +95,8 @@ class SymfonyPort
      * @throws InvalidArgumentException
      *
      * @return string
+     *
+     * @deprecated Will be removed when we drop support for SF2.7
      */
     public function getVersionNumber(\DOMDocument $dom)
     {
@@ -116,5 +119,85 @@ class SymfonyPort
 
         // Falls back to v1.2
         return '1.2';
+    }
+
+    /**
+     * Validates and parses the given file into a DOMDocument.
+     *
+     * @param string       $file
+     * @param \DOMDocument $dom
+     * @param string       $schema source of the schema
+     *
+     * @throws InvalidResourceException
+     *
+     * @deprecated Will be removed when we drop support for SF2.7
+     */
+    public function validateSchema($file, \DOMDocument $dom, $schema)
+    {
+        $internalErrors = libxml_use_internal_errors(true);
+
+        $disableEntities = libxml_disable_entity_loader(false);
+
+        if (!@$dom->schemaValidateSource($schema)) {
+            libxml_disable_entity_loader($disableEntities);
+
+            throw new InvalidResourceException(sprintf('Invalid resource provided: "%s"; Errors: %s', $file, implode("\n", $this->getXmlErrors($internalErrors))));
+        }
+
+        libxml_disable_entity_loader($disableEntities);
+
+        $dom->normalizeDocument();
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($internalErrors);
+    }
+
+    /**
+     * @param $xliffVersion
+     * @return string
+     *
+     * @deprecated Will be removed when we drop support for SF2.7
+     */
+    public function getSchema($xliffVersion)
+    {
+        if ('1.2' === $xliffVersion) {
+            $schemaSource = file_get_contents(__DIR__.'/schema/dic/xliff-core/xliff-core-1.2-strict.xsd');
+            $xmlUri = 'http://www.w3.org/2001/xml.xsd';
+        } elseif ('2.0' === $xliffVersion) {
+            $schemaSource = file_get_contents(__DIR__.'/schema/dic/xliff-core/xliff-core-2.0.xsd');
+            $xmlUri = 'informativeCopiesOf3rdPartySchemas/w3c/xml.xsd';
+        } else {
+            throw new InvalidArgumentException(sprintf('No support implemented for loading XLIFF version "%s".', $xliffVersion));
+        }
+
+        return $this->fixXmlLocation($schemaSource, $xmlUri);
+    }
+
+    /**
+     * Internally changes the URI of a dependent xsd to be loaded locally.
+     *
+     * @param string $schemaSource Current content of schema file
+     * @param string $xmlUri       External URI of XML to convert to local
+     *
+     * @return string
+     *
+     * @deprecated Will be removed when we drop support for SF2.7
+     */
+    private function fixXmlLocation($schemaSource, $xmlUri)
+    {
+        $newPath = str_replace('\\', '/', __DIR__).'/schema/dic/xliff-core/xml.xsd';
+        $parts = explode('/', $newPath);
+        if (0 === stripos($newPath, 'phar://')) {
+            $tmpfile = tempnam(sys_get_temp_dir(), 'sf2');
+            if ($tmpfile) {
+                copy($newPath, $tmpfile);
+                $parts = explode('/', str_replace('\\', '/', $tmpfile));
+            }
+        }
+
+        $drive = '\\' === DIRECTORY_SEPARATOR ? array_shift($parts).'/' : '';
+        $newPath = 'file:///'.$drive.implode('/', array_map('rawurlencode', $parts));
+
+        return str_replace($xmlUri, $newPath, $schemaSource);
     }
 }
