@@ -2,6 +2,17 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 0.3.0
+
+### Added
+
+- Added more tests
+- Improved loader and dumper of Xliff2.0 meta 
+
+### Changed
+
+- We will create an output file if no file exists. 
+- Xliff2.0 is default format
 
 ## 0.2.2
 
