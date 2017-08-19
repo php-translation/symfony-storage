@@ -12,6 +12,8 @@
 namespace Translation\SymfonyStorage\Loader;
 
 use Nyholm\NSA;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
@@ -28,6 +30,30 @@ class XliffLoader extends XliffFileLoader
      * @var SymfonyPort|null
      */
     private $sfPort;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function load($resource, $locale, $domain = 'messages')
+    {
+        if (!stream_is_local($resource)) {
+            throw new InvalidResourceException(sprintf('This is not a local file "%s".', $resource));
+        }
+
+        if (!file_exists($resource)) {
+            throw new NotFoundResourceException(sprintf('File "%s" not found.', $resource));
+        }
+
+        $catalogue = new MessageCatalogue($locale);
+        $content = file_get_contents($resource);
+        $this->extractFromContent($content, $catalogue, $domain);
+
+        if (class_exists('Symfony\Component\Config\Resource\FileResource')) {
+            $catalogue->addResource(new FileResource($resource));
+        }
+
+        return $catalogue;
+    }
 
     /**
      * @param string           $content   xml content

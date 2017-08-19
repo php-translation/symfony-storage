@@ -105,4 +105,25 @@ XML;
         $this->assertEquals('1', $metadata['notes'][2]['priority']);
         $this->assertEquals('user login', $metadata['notes'][2]['content']);
     }
+
+    public function testXliff20FromResource()
+    {
+        $file = __DIR__.'/../../Fixtures/meta.en.xlf';
+
+        $catalogue = (new XliffLoader())->load($file, 'en', 'messages');
+        $this->assertTrue($catalogue->defines('foo'));
+        $metadata = $catalogue->getMetadata('foo');
+        $this->assertNotEmpty($metadata);
+        $this->assertCount(3, $metadata['notes']);
+
+        $this->assertEquals('state', $metadata['notes'][0]['category']);
+        $this->assertEquals('new', $metadata['notes'][0]['content']);
+
+        $this->assertEquals('approved', $metadata['notes'][1]['category']);
+        $this->assertEquals('true', $metadata['notes'][1]['content']);
+
+        $this->assertEquals('section', $metadata['notes'][2]['category']);
+        $this->assertEquals('1', $metadata['notes'][2]['priority']);
+        $this->assertEquals('user login', $metadata['notes'][2]['content']);
+    }
 }
