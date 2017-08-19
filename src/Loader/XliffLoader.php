@@ -15,6 +15,7 @@ use Nyholm\NSA;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
+use Translation\SymfonyStorage\Loader\Port\SymfonyPort;
 
 /**
  * This class is an ugly hack to allow loading Xliff from string content.
@@ -23,6 +24,11 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
  */
 class XliffLoader extends XliffFileLoader
 {
+    /**
+     * @var SymfonyPort|null
+     */
+    private $sfPort;
+
     /**
      * @param string           $content   xml content
      * @param MessageCatalogue $catalogue
@@ -49,55 +55,13 @@ class XliffLoader extends XliffFileLoader
         }
 
         if ('2.0' === $xliffVersion) {
-            $this->extractXliff2($dom, $catalogue, $domain);
+            if (null === $this->sfPort) {
+                $this->sfPort = new SymfonyPort();
+            }
+            $this->sfPort->extractXliff2($dom, $catalogue, $domain);
         }
     }
 
-    /**
-     * @param \DOMDocument     $dom
-     * @param MessageCatalogue $catalogue
-     * @param string           $domain
-     */
-    private function extractXliff2(\DOMDocument $dom, MessageCatalogue $catalogue, $domain)
-    {
-        $xml = simplexml_import_dom($dom);
-        $encoding = strtoupper($dom->encoding);
-
-        $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:2.0');
-
-        foreach ($xml->xpath('//xliff:unit') as $unit) {
-            $segment = $unit->segment;
-            $source = $segment->source;
-
-            // If the xlf file has another encoding specified, try to convert it because
-            // simple_xml will always return utf-8 encoded values
-            $target = $this->utf8ToCharset((string) (isset($segment->target) ? $segment->target : $source), $encoding);
-
-            $catalogue->set((string) $source, $target, $domain);
-
-            $metadata = [];
-            if (isset($segment->target) && $segment->target->attributes()) {
-                $metadata['target-attributes'] = [];
-                foreach ($segment->target->attributes() as $key => $value) {
-                    $metadata['target-attributes'][$key] = (string) $value;
-                }
-            }
-
-            if (isset($unit->notes)) {
-                $metadata['notes'] = [];
-                foreach ($unit->notes->note as $noteNode) {
-                    $note = [];
-                    foreach ($noteNode->attributes() as $key => $value) {
-                        $note[$key] = (string) $value;
-                    }
-                    $note['content'] = (string) $noteNode;
-                    $metadata['notes'][] = $note;
-                }
-            }
-
-            $catalogue->setMetadata((string) $source, $metadata, $domain);
-        }
-    }
 
     /**
      * Loads an XML file.
@@ -168,20 +132,4 @@ class XliffLoader extends XliffFileLoader
         return $errors;
     }
 
-    /**
-     * Convert a UTF8 string to the specified encoding.
-     *
-     * @param string $content  String to decode
-     * @param string $encoding Target encoding
-     *
-     * @return string
-     */
-    private function utf8ToCharset($content, $encoding = null)
-    {
-        if ('UTF-8' !== $encoding && !empty($encoding)) {
-            return mb_convert_encoding($content, $encoding, 'UTF-8');
-        }
-
-        return $content;
-    }
 }
