@@ -121,83 +121,88 @@ class SymfonyPort
         return '1.2';
     }
 
+
     /**
-     * Validates and parses the given file into a DOMDocument.
+     * Extract messages and metadata from DOMDocument into a MessageCatalogue.
      *
-     * @param string       $file
-     * @param \DOMDocument $dom
-     * @param string       $schema source of the schema
-     *
-     * @throws InvalidResourceException
+     * @param \DOMDocument     $dom       Source to extract messages and metadata
+     * @param MessageCatalogue $catalogue Catalogue where we'll collect messages and metadata
+     * @param string           $domain    The domain
      *
      * @deprecated Will be removed when we drop support for SF2.7
      */
-    public function validateSchema($file, \DOMDocument $dom, $schema)
+    public function extractXliff1(\DOMDocument $dom, MessageCatalogue $catalogue, $domain)
     {
-        $internalErrors = libxml_use_internal_errors(true);
+        $xml = simplexml_import_dom($dom);
+        $encoding = strtoupper($dom->encoding);
 
-        $disableEntities = libxml_disable_entity_loader(false);
+        $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
+        foreach ($xml->xpath('//xliff:trans-unit') as $translation) {
+            $attributes = $translation->attributes();
 
-        if (!@$dom->schemaValidateSource($schema)) {
-            libxml_disable_entity_loader($disableEntities);
-
-            throw new InvalidResourceException(sprintf('Invalid resource provided: "%s"; Errors: %s', $file, implode("\n", $this->getXmlErrors($internalErrors))));
-        }
-
-        libxml_disable_entity_loader($disableEntities);
-
-        $dom->normalizeDocument();
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
-    }
-
-    /**
-     * @param $xliffVersion
-     * @return string
-     *
-     * @deprecated Will be removed when we drop support for SF2.7
-     */
-    public function getSchema($xliffVersion)
-    {
-        if ('1.2' === $xliffVersion) {
-            $schemaSource = file_get_contents(__DIR__.'/schema/dic/xliff-core/xliff-core-1.2-strict.xsd');
-            $xmlUri = 'http://www.w3.org/2001/xml.xsd';
-        } elseif ('2.0' === $xliffVersion) {
-            $schemaSource = file_get_contents(__DIR__.'/schema/dic/xliff-core/xliff-core-2.0.xsd');
-            $xmlUri = 'informativeCopiesOf3rdPartySchemas/w3c/xml.xsd';
-        } else {
-            throw new InvalidArgumentException(sprintf('No support implemented for loading XLIFF version "%s".', $xliffVersion));
-        }
-
-        return $this->fixXmlLocation($schemaSource, $xmlUri);
-    }
-
-    /**
-     * Internally changes the URI of a dependent xsd to be loaded locally.
-     *
-     * @param string $schemaSource Current content of schema file
-     * @param string $xmlUri       External URI of XML to convert to local
-     *
-     * @return string
-     *
-     * @deprecated Will be removed when we drop support for SF2.7
-     */
-    private function fixXmlLocation($schemaSource, $xmlUri)
-    {
-        $newPath = str_replace('\\', '/', __DIR__).'/schema/dic/xliff-core/xml.xsd';
-        $parts = explode('/', $newPath);
-        if (0 === stripos($newPath, 'phar://')) {
-            $tmpfile = tempnam(sys_get_temp_dir(), 'sf2');
-            if ($tmpfile) {
-                copy($newPath, $tmpfile);
-                $parts = explode('/', str_replace('\\', '/', $tmpfile));
+            if (!(isset($attributes['resname']) || isset($translation->source))) {
+                continue;
             }
+
+            $source = isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source;
+            // If the xlf file has another encoding specified, try to convert it because
+            // simple_xml will always return utf-8 encoded values
+            $target = $this->utf8ToCharset((string) (isset($translation->target) ? $translation->target : $source), $encoding);
+
+            $catalogue->set((string) $source, $target, $domain);
+
+            $metadata = array();
+            if ($notes = $this->parseNotesMetadata($translation->note, $encoding)) {
+                $metadata['notes'] = $notes;
+            }
+
+            if (isset($translation->target) && $translation->target->attributes()) {
+                $metadata['target-attributes'] = array();
+                foreach ($translation->target->attributes() as $key => $value) {
+                    $metadata['target-attributes'][$key] = (string) $value;
+                }
+            }
+
+            if (isset($attributes['id'])) {
+                $metadata['id'] = (string) $attributes['id'];
+            }
+
+            $catalogue->setMetadata((string) $source, $metadata, $domain);
+        }
+    }
+
+
+    /**
+     * @param \SimpleXMLElement|null $noteElement
+     * @param string|null            $encoding
+     *
+     * @return array
+     *
+     * @deprecated Will be removed when we drop support for SF2.7
+     */
+    private function parseNotesMetadata(\SimpleXMLElement $noteElement = null, $encoding = null)
+    {
+        $notes = array();
+
+        if (null === $noteElement) {
+            return $notes;
         }
 
-        $drive = '\\' === DIRECTORY_SEPARATOR ? array_shift($parts).'/' : '';
-        $newPath = 'file:///'.$drive.implode('/', array_map('rawurlencode', $parts));
+        /** @var \SimpleXMLElement $xmlNote */
+        foreach ($noteElement as $xmlNote) {
+            $noteAttributes = $xmlNote->attributes();
+            $note = array('content' => $this->utf8ToCharset((string) $xmlNote, $encoding));
+            if (isset($noteAttributes['priority'])) {
+                $note['priority'] = (int) $noteAttributes['priority'];
+            }
 
-        return str_replace($xmlUri, $newPath, $schemaSource);
+            if (isset($noteAttributes['from'])) {
+                $note['from'] = (string) $noteAttributes['from'];
+            }
+
+            $notes[] = $note;
+        }
+
+        return $notes;
     }
 }

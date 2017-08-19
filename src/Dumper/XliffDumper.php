@@ -49,7 +49,12 @@ final class XliffDumper extends XliffFileDumper
         }
 
         if ('1.2' === $xliffVersion) {
-            return NSA::invokeMethod($this, 'dumpXliff1', $defaultLocale, $messages, $domain, $options);
+            if (method_exists($this, 'dumpXliff1')) {
+                return NSA::invokeMethod($this, 'dumpXliff1', $defaultLocale, $messages, $domain, $options);
+            } else {
+                // Symfony 2.7
+                return $this->format($messages, $domain);
+            }
         }
 
         if ('2.0' === $xliffVersion) {
@@ -63,18 +68,5 @@ final class XliffDumper extends XliffFileDumper
         throw new InvalidArgumentException(
             sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion)
         );
-    }
-
-    /**
-     * Symfony 2.7 support.
-     *
-     * @param MessageCatalogue $messages
-     * @param string           $domain
-     *
-     * @return string
-     */
-    protected function format(MessageCatalogue $messages, $domain)
-    {
-        return $this->formatCatalogue($messages, $domain, ['xliff_version' => '2.0']);
     }
 }

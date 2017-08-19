@@ -51,11 +51,17 @@ class XliffLoader extends XliffFileLoader
                 $this->sfPort = new SymfonyPort();
             }
             $xliffVersion = $this->sfPort->getVersionNumber($dom);
-            $this->sfPort->validateSchema($xliffVersion, $dom, $this->sfPort->getSchema($xliffVersion));
         }
 
         if ('1.2' === $xliffVersion) {
-            NSA::invokeMethod($this, 'extractXliff1', $dom, $catalogue, $domain);
+            if (method_exists($this, 'extractXliff1')) {
+                NSA::invokeMethod($this, 'extractXliff1', $dom, $catalogue, $domain);
+            } else {
+                if (null === $this->sfPort) {
+                    $this->sfPort = new SymfonyPort();
+                }
+                $this->sfPort->extractXliff1($dom, $catalogue, $domain);
+            }
         }
 
         if ('2.0' === $xliffVersion) {
