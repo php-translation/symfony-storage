@@ -99,7 +99,7 @@ XML;
             $this->markTestSkipped('Symfony <2.8 is not supported. ');
         }
 
-        $content = file_get_contents(__DIR__.'/../../Fixtures/single-file/meta.en.xlf');
+        $content = file_get_contents(__DIR__.'/../../Fixtures/meta.en.xlf');
 
         $catalogue = new MessageCatalogue('en');
         (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
