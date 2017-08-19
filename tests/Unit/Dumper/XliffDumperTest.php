@@ -17,7 +17,22 @@ use Translation\SymfonyStorage\Dumper\XliffDumper;
 
 class XliffDumperTest extends TestCase
 {
-    public function testDumpXliff2Meta()
+    public function testDumpXliff12()
+    {
+        $catalogue = new MessageCatalogue('en');
+        $catalogue->set('key0', 'trans0');
+        $catalogue->set('key1', 'trans1');
+
+        $dumper = new XliffDumper();
+        $output = $dumper->formatCatalogue($catalogue, 'messages', ['xliff_version' => '1.2']);
+
+        $this->assertContains('<source>key0</source>', $output);
+        $this->assertContains('<target>trans0</target>', $output);
+        $this->assertContains('<source>key1</source>', $output);
+        $this->assertContains('<target>trans1</target>', $output);
+    }
+
+    public function testDumpXliff20Meta()
     {
         $catalogue = new MessageCatalogue('en');
         $catalogue->set('key0', 'trans0');
