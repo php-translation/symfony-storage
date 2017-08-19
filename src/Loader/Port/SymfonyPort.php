@@ -3,6 +3,7 @@
 namespace Translation\SymfonyStorage\Loader\Port;
 
 use Symfony\Component\Translation\MessageCatalogue;
+use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
 /**
  * This code is moved from the Symfony 3.4 repo. It will be removed when
@@ -74,4 +75,39 @@ class SymfonyPort
 
         return $content;
     }
+
+
+    /**
+     * Gets xliff file version based on the root "version" attribute.
+     * Defaults to 1.2 for backwards compatibility.
+     *
+     * @param \DOMDocument $dom
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return string
+     */
+    public function getVersionNumber(\DOMDocument $dom)
+    {
+        /** @var \DOMNode $xliff */
+        foreach ($dom->getElementsByTagName('xliff') as $xliff) {
+            $version = $xliff->attributes->getNamedItem('version');
+            if ($version) {
+                return $version->nodeValue;
+            }
+
+            $namespace = $xliff->attributes->getNamedItem('xmlns');
+            if ($namespace) {
+                if (substr_compare('urn:oasis:names:tc:xliff:document:', $namespace->nodeValue, 0, 34) !== 0) {
+                    throw new InvalidArgumentException(sprintf('Not a valid XLIFF namespace "%s"', $namespace));
+                }
+
+                return substr($namespace, 34);
+            }
+        }
+
+        // Falls back to v1.2
+        return '1.2';
+    }
+
 }
