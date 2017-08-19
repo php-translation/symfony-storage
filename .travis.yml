@@ -24,14 +24,29 @@ env:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - php: 7.1
+      env: SYMFONY_VERSION=3.4.x-dev
+    - php: 7.1
+      env: SYMFONY_VERSION=4.0.x-dev
   include:
     - php: 5.5
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci" SYMFONY_VERSION=2.8.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.0.*
     - php: hhvm
       dist: trusty
       env: SYMFONY_VERSION=2.8.*
+    - php: 7.0
+      env: SYMFONY_VERSION=2.8.*
+    - php: 7.1
+      env: SYMFONY_VERSION=3.4.x-dev
+    - php: 7.1
+      env: SYMFONY_VERSION=4.0.x-dev
+    - php: 7.0
+      env: SYMFONY_VERSION=3.0.*
+    - php: 7.0
+      env: SYMFONY_VERSION=3.1.*
+    - php: 7.0
+      env: SYMFONY_VERSION=3.2.*
 
 install:
     - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
