@@ -12,7 +12,6 @@
 namespace Translation\SymfonyStorage\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\MessageCatalogue;
 use Translation\SymfonyStorage\XliffConverter;
 

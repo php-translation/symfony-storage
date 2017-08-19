@@ -11,7 +11,6 @@
 
 namespace Translation\SymfonyStorage\Loader\Port;
 
-use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
@@ -121,7 +120,6 @@ class SymfonyPort
         return '1.2';
     }
 
-
     /**
      * Extract messages and metadata from DOMDocument into a MessageCatalogue.
      *
@@ -151,13 +149,13 @@ class SymfonyPort
 
             $catalogue->set((string) $source, $target, $domain);
 
-            $metadata = array();
+            $metadata = [];
             if ($notes = $this->parseNotesMetadata($translation->note, $encoding)) {
                 $metadata['notes'] = $notes;
             }
 
             if (isset($translation->target) && $translation->target->attributes()) {
-                $metadata['target-attributes'] = array();
+                $metadata['target-attributes'] = [];
                 foreach ($translation->target->attributes() as $key => $value) {
                     $metadata['target-attributes'][$key] = (string) $value;
                 }
@@ -171,7 +169,6 @@ class SymfonyPort
         }
     }
 
-
     /**
      * @param \SimpleXMLElement|null $noteElement
      * @param string|null            $encoding
@@ -182,7 +179,7 @@ class SymfonyPort
      */
     private function parseNotesMetadata(\SimpleXMLElement $noteElement = null, $encoding = null)
     {
-        $notes = array();
+        $notes = [];
 
         if (null === $noteElement) {
             return $notes;
@@ -191,7 +188,7 @@ class SymfonyPort
         /** @var \SimpleXMLElement $xmlNote */
         foreach ($noteElement as $xmlNote) {
             $noteAttributes = $xmlNote->attributes();
-            $note = array('content' => $this->utf8ToCharset((string) $xmlNote, $encoding));
+            $note = ['content' => $this->utf8ToCharset((string) $xmlNote, $encoding)];
             if (isset($noteAttributes['priority'])) {
                 $note['priority'] = (int) $noteAttributes['priority'];
             }
