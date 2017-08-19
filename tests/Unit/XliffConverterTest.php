@@ -23,10 +23,6 @@ class XliffConverterTest extends TestCase
 {
     public function testContentToCatalogue()
     {
-        if (Kernel::VERSION_ID < 20800) {
-            $this->markTestSkipped('Symfony <2.8 is not supported. ');
-        }
-
         $content = file_get_contents(__DIR__.'/../Fixtures/single-file/messages.en.xlf');
         $catalogue = XliffConverter::contentToCatalogue($content, 'en', 'messages');
 
