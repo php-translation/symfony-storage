@@ -66,7 +66,6 @@ class XliffLoader extends XliffFileLoader
         }
     }
 
-
     /**
      * Loads an XML file.
      *
@@ -135,5 +134,4 @@ class XliffLoader extends XliffFileLoader
 
         return $errors;
     }
-
 }

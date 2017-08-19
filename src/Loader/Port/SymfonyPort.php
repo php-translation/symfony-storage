@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the PHP Translation package.
+ *
+ * (c) PHP Translation team <tobias.nyholm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Translation\SymfonyStorage\Loader\Port;
 
 use Symfony\Component\Translation\MessageCatalogue;
@@ -76,7 +85,6 @@ class SymfonyPort
         return $content;
     }
 
-
     /**
      * Gets xliff file version based on the root "version" attribute.
      * Defaults to 1.2 for backwards compatibility.
@@ -109,5 +117,4 @@ class SymfonyPort
         // Falls back to v1.2
         return '1.2';
     }
-
 }
