@@ -69,4 +69,12 @@ final class XliffDumper extends XliffFileDumper
             sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion)
         );
     }
+
+    /**
+     * To support Symfony 2.7.
+     */
+    protected function format(MessageCatalogue $messages, $domain)
+    {
+        return $this->formatCatalogue($messages, $domain, ['xliff_version'=>'2.0']);
+    }
 }
