@@ -92,4 +92,31 @@ XML;
         $this->assertTrue($catalogue->defines('key0'));
         $this->assertTrue($catalogue->defines('key1'));
     }
+
+
+    public function testXliff20Meta()
+    {
+        if (Kernel::VERSION_ID < 20800) {
+            $this->markTestSkipped('Symfony <2.8 is not supported. ');
+        }
+
+        $content = file_get_contents(__DIR__.'/../../Fixtures/single-file/meta.en.xlf');
+
+        $catalogue = new MessageCatalogue('en');
+        (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
+        $this->assertTrue($catalogue->defines('foo'));
+        $metadata = $catalogue->getMetadata('foo');
+        $this->assertNotEmpty($metadata);
+        $this->assertCount(3, $metadata['notes']);
+
+        $this->assertEquals('state', $metadata['notes'][0]['category']);
+        $this->assertEquals('new', $metadata['notes'][0]['content']);
+
+        $this->assertEquals('approved', $metadata['notes'][1]['category']);
+        $this->assertEquals('true', $metadata['notes'][1]['content']);
+
+        $this->assertEquals('section', $metadata['notes'][2]['category']);
+        $this->assertEquals('1', $metadata['notes'][2]['priority']);
+        $this->assertEquals('user login', $metadata['notes'][2]['content']);
+    }
 }

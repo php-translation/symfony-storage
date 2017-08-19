@@ -49,9 +49,57 @@ class XliffLoader extends XliffFileLoader
         }
 
         if ('2.0' === $xliffVersion) {
-            NSA::invokeMethod($this, 'extractXliff2', $dom, $catalogue, $domain);
+            $this->extractXliff2($dom, $catalogue, $domain);
         }
     }
+
+
+    /**
+     * @param \DOMDocument     $dom
+     * @param MessageCatalogue $catalogue
+     * @param string           $domain
+     */
+    private function extractXliff2(\DOMDocument $dom, MessageCatalogue $catalogue, $domain)
+    {
+        $xml = simplexml_import_dom($dom);
+        $encoding = strtoupper($dom->encoding);
+
+        $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:2.0');
+
+        foreach ($xml->xpath('//xliff:unit') as $unit) {
+            $segment = $unit->segment;
+            $source = $segment->source;
+
+            // If the xlf file has another encoding specified, try to convert it because
+            // simple_xml will always return utf-8 encoded values
+            $target = $this->utf8ToCharset((string) (isset($segment->target) ? $segment->target : $source), $encoding);
+
+            $catalogue->set((string) $source, $target, $domain);
+
+            $metadata = array();
+            if (isset($segment->target) && $segment->target->attributes()) {
+                $metadata['target-attributes'] = array();
+                foreach ($segment->target->attributes() as $key => $value) {
+                    $metadata['target-attributes'][$key] = (string) $value;
+                }
+            }
+
+            if (isset($unit->notes)) {
+                $metadata['notes'] = array();
+                foreach ($unit->notes->note as $noteNode) {
+                    $note = [];
+                    foreach ($noteNode->attributes() as $key => $value) {
+                        $note[$key] = (string) $value;
+                    }
+                    $note['content'] = (string) $noteNode;
+                    $metadata['notes'][] = $note;
+                }
+            }
+
+            $catalogue->setMetadata((string) $source, $metadata, $domain);
+        }
+    }
+
 
     /**
      * Loads an XML file.
@@ -120,5 +168,22 @@ class XliffLoader extends XliffFileLoader
         libxml_use_internal_errors($internalErrors);
 
         return $errors;
+    }
+
+    /**
+     * Convert a UTF8 string to the specified encoding.
+     *
+     * @param string $content  String to decode
+     * @param string $encoding Target encoding
+     *
+     * @return string
+     */
+    private function utf8ToCharset($content, $encoding = null)
+    {
+        if ('UTF-8' !== $encoding && !empty($encoding)) {
+            return mb_convert_encoding($content, $encoding, 'UTF-8');
+        }
+
+        return $content;
     }
 }
