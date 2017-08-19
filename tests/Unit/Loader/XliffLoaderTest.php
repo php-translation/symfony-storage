@@ -93,7 +93,6 @@ XML;
         $this->assertTrue($catalogue->defines('key1'));
     }
 
-
     public function testXliff20Meta()
     {
         if (Kernel::VERSION_ID < 20800) {

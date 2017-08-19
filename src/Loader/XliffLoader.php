@@ -53,7 +53,6 @@ class XliffLoader extends XliffFileLoader
         }
     }
 
-
     /**
      * @param \DOMDocument     $dom
      * @param MessageCatalogue $catalogue
@@ -76,16 +75,16 @@ class XliffLoader extends XliffFileLoader
 
             $catalogue->set((string) $source, $target, $domain);
 
-            $metadata = array();
+            $metadata = [];
             if (isset($segment->target) && $segment->target->attributes()) {
-                $metadata['target-attributes'] = array();
+                $metadata['target-attributes'] = [];
                 foreach ($segment->target->attributes() as $key => $value) {
                     $metadata['target-attributes'][$key] = (string) $value;
                 }
             }
 
             if (isset($unit->notes)) {
-                $metadata['notes'] = array();
+                $metadata['notes'] = [];
                 foreach ($unit->notes->note as $noteNode) {
                     $note = [];
                     foreach ($noteNode->attributes() as $key => $value) {
@@ -99,7 +98,6 @@ class XliffLoader extends XliffFileLoader
             $catalogue->setMetadata((string) $source, $metadata, $domain);
         }
     }
-
 
     /**
      * Loads an XML file.
