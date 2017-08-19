@@ -53,6 +53,17 @@ final class XliffDumper extends FileDumper
     }
 
     /**
+     * Symfony 2.7 support
+     * @param MessageCatalogue $messages
+     * @param string $domain
+     * @return string
+     */
+    protected function format(MessageCatalogue $messages, $domain)
+    {
+        return $this->dumpXliff2(\Locale::getDefault(), $messages, $domain);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getExtension()
