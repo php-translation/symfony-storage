@@ -75,6 +75,6 @@ final class XliffDumper extends XliffFileDumper
      */
     protected function format(MessageCatalogue $messages, $domain)
     {
-        return $this->formatCatalogue($messages, $domain, ['xliff_version'=>'2.0']);
+        return $this->formatCatalogue($messages, $domain, ['xliff_version' => '2.0']);
     }
 }
