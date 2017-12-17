@@ -11,16 +11,16 @@
 
 namespace Translation\SymfonyStorage;
 
+use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader as SymfonyTranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
-use Symfony\Component\Translation\Reader\TranslationReader;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
 use Translation\Common\Storage;
 use Translation\Common\TransferableStorage;
 
 /**
- * This storage uses Symfony's writer and reader.
+ * This storage uses Symfony's writer and loader.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
@@ -32,9 +32,9 @@ final class FileStorage implements Storage, TransferableStorage
     private $writer;
 
     /**
-     * @var TranslationReader
+     * @var TranslationLoader|SymfonyTranslationLoader
      */
-    private $reader;
+    private $loader;
 
     /**
      * @var array directory path
@@ -52,13 +52,17 @@ final class FileStorage implements Storage, TransferableStorage
     private $catalogues;
 
     /**
-     * @param TranslationWriter $writer
-     * @param TranslationReader $reader
-     * @param array             $dir
-     * @param array             $options
+     * @param TranslationWriter                          $writer
+     * @param SymfonyTranslationLoader|TranslationLoader $loader
+     * @param array                                      $dir
+     * @param array                                      $options
      */
-    public function __construct(TranslationWriter $writer, TranslationReader $reader, array $dir, array $options = [])
+    public function __construct(TranslationWriter $writer, $loader, array $dir, array $options = [])
     {
+        if (!$loader instanceof SymfonyTranslationLoader && !$loader instanceof TranslationLoader) {
+            throw new \LogicException('Second parameter of FileStorage must be a Symfony translation loader or implement Translation\SymfonyStorage\TranslationLoader');
+        }
+
         if (empty($dir)) {
             throw new \LogicException('Third parameter of FileStorage cannot be empty');
         }
@@ -69,7 +73,7 @@ final class FileStorage implements Storage, TransferableStorage
         }
 
         $this->writer = $writer;
-        $this->reader = $reader;
+        $this->loader = $loader;
         $this->dir = $dir;
         $this->options = $options;
     }
@@ -195,7 +199,7 @@ final class FileStorage implements Storage, TransferableStorage
         $currentCatalogue = new MessageCatalogue($locale);
         foreach ($dirs as $path) {
             if (is_dir($path)) {
-                $this->reader->read($path, $currentCatalogue);
+                $this->loader->loadMessages($path, $currentCatalogue);
             }
         }
 
