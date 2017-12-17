@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
+use Symfony\Component\Translation\Reader\TranslationReader;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
 use Translation\SymfonyStorage\FileStorage;
@@ -27,7 +28,7 @@ class FileStorageTest extends TestCase
 {
     public function testConstructor()
     {
-        $storage = new FileStorage(new TranslationWriter(), new TranslationLoader(), ['foo']);
+        $storage = new FileStorage(new TranslationWriter(), $this->createTranslationLoader(), ['foo']);
         $this->assertInstanceOf(FileStorage::class, $storage);
     }
 
@@ -44,7 +45,7 @@ class FileStorageTest extends TestCase
      */
     public function testConstructorEmptyArray()
     {
-        new FileStorage(new TranslationWriter(), new TranslationLoader(), []);
+        new FileStorage(new TranslationWriter(), $this->createTranslationLoader(), []);
     }
 
     public function testCreateNewCatalogue()
@@ -61,7 +62,7 @@ class FileStorageTest extends TestCase
                 ['path' => 'foo', 'xliff_version' => '2.0']
             );
 
-        $storage = new FileStorage($writer, new TranslationLoader(), ['foo']);
+        $storage = new FileStorage($writer, $this->createTranslationLoader(), ['foo']);
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
 
         $writer = $this->getMockBuilder(TranslationWriter::class)
@@ -76,7 +77,7 @@ class FileStorageTest extends TestCase
                 ['path' => 'bar', 'default_output_format' => 'format', 'xliff_version' => '2.0']
             );
 
-        $storage = new FileStorage($writer, new TranslationLoader(), ['bar'], ['default_output_format' => 'format']);
+        $storage = new FileStorage($writer, $this->createTranslationLoader(), ['bar'], ['default_output_format' => 'format']);
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
     }
 
@@ -94,7 +95,7 @@ class FileStorageTest extends TestCase
                 ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, ['foo', $this->getFixturePath()]);
 
@@ -107,7 +108,7 @@ class FileStorageTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
@@ -137,7 +138,7 @@ class FileStorageTest extends TestCase
                 ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
@@ -162,7 +163,7 @@ class FileStorageTest extends TestCase
                 ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
@@ -186,7 +187,7 @@ class FileStorageTest extends TestCase
                 ['path' => $this->getFixturePath(), 'xliff_version' => '2.0']
             );
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
         $catalogue = new MessageCatalogue('en', ['messages' => ['test_4711' => 'foobar']]);
@@ -200,7 +201,7 @@ class FileStorageTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loader = new TranslationLoader();
+        $loader = $this->createTranslationLoader();
         $loader->addLoader('xlf', new XliffLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
@@ -221,5 +222,17 @@ class FileStorageTest extends TestCase
     private function getFixturePath()
     {
         return realpath(__DIR__.'/../Fixtures/single-file');
+    }
+
+    /**
+     * @return TranslationLoader|TranslationReader
+     */
+    private function createTranslationLoader()
+    {
+        if (class_exists(TranslationReader::class)) {
+            return new TranslationReader();
+        }
+
+        return new TranslationLoader();
     }
 }
