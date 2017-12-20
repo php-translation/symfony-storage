@@ -136,7 +136,7 @@ class XliffLoader extends XliffFileLoader
         libxml_disable_entity_loader($disableEntities);
 
         foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+            if (XML_DOCUMENT_TYPE_NODE === $child->nodeType) {
                 throw new \InvalidArgumentException('Document types are not allowed.');
             }
         }
