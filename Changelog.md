@@ -2,6 +2,12 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 0.3.2
+
+### Added
+
+- Support for Symfony 4
+
 ## 0.3.1
 
 ### Fixed
