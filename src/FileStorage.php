@@ -217,10 +217,10 @@ final class FileStorage implements Storage, TransferableStorage
      * to avoid BC breaks.
      *
      * @param MessageCatalogue $catalogue
-     * @param $format
+     * @param string $format
      * @param array $options
      */
-    private function writeTranslations(MessageCatalogue $catalogue, $format, $options = array())
+    private function writeTranslations(MessageCatalogue $catalogue, $format, array $options)
     {
         if (method_exists($this->writer, 'write')) {
             $this->writer->write($catalogue, $format, $options);
