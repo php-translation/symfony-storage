@@ -51,11 +51,11 @@ class FileStorageTest extends TestCase
     public function testCreateNewCatalogue()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
         $writer->expects($this->once())
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
@@ -66,11 +66,11 @@ class FileStorageTest extends TestCase
         $storage->create(new Message('key', 'domain', 'en', 'Message'));
 
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
         $writer->expects($this->once())
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'format',
@@ -84,11 +84,11 @@ class FileStorageTest extends TestCase
     public function testCreateExistingCatalogue()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
         $writer->expects($this->once())
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
@@ -127,11 +127,11 @@ class FileStorageTest extends TestCase
     public function testUpdate()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
         $writer->expects($this->exactly(2))
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->isInstanceOf(MessageCatalogueInterface::class),
                 'xlf',
@@ -149,12 +149,12 @@ class FileStorageTest extends TestCase
     public function testDelete()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
 
         $writer->expects($this->once())
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->callback(function (MessageCatalogueInterface $catalogue) {
                     return !$catalogue->defines('test_0', 'messages');
@@ -173,12 +173,12 @@ class FileStorageTest extends TestCase
     public function testImport()
     {
         $writer = $this->getMockBuilder(TranslationWriter::class)
-            ->setMethods(['writeTranslations'])
+            ->setMethods([$this->getMethodNameToWriteTranslations()])
             ->disableOriginalConstructor()
             ->getMock();
 
         $writer->expects($this->once())
-            ->method('writeTranslations')
+            ->method($this->getMethodNameToWriteTranslations())
             ->with(
                 $this->callback(function (MessageCatalogueInterface $catalogue) {
                     return $catalogue->defines('test_4711', 'messages');
@@ -234,5 +234,14 @@ class FileStorageTest extends TestCase
         }
 
         return new TranslationLoader();
+    }
+
+    private function getMethodNameToWriteTranslations()
+    {
+        if (method_exists(TranslationWriter::class, 'write')) {
+            return 'write';
+        }
+
+        return 'writeTranslations';
     }
 }
