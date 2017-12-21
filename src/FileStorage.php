@@ -217,8 +217,8 @@ final class FileStorage implements Storage, TransferableStorage
      * to avoid BC breaks.
      *
      * @param MessageCatalogue $catalogue
-     * @param string $format
-     * @param array $options
+     * @param string           $format
+     * @param array            $options
      */
     private function writeTranslations(MessageCatalogue $catalogue, $format, array $options)
     {
