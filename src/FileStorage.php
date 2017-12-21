@@ -164,7 +164,7 @@ final class FileStorage implements Storage, TransferableStorage
             $path = (string) $resource;
             if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
                 $options['path'] = str_replace($matches[0], '', $path);
-                $this->writer->writeTranslations($catalogue, $matches[1], $options);
+                $this->writeTranslations($catalogue, $matches[1], $options);
                 $written = true;
             }
         }
@@ -176,7 +176,7 @@ final class FileStorage implements Storage, TransferableStorage
 
         $options['path'] = reset($this->dir);
         $format = isset($options['default_output_format']) ? $options['default_output_format'] : 'xlf';
-        $this->writer->writeTranslations($catalogue, $format, $options);
+        $this->writeTranslations($catalogue, $format, $options);
     }
 
     /**
@@ -209,5 +209,24 @@ final class FileStorage implements Storage, TransferableStorage
         }
 
         $this->catalogues[$locale] = $currentCatalogue;
+    }
+
+    /**
+     * This method calls the new TranslationWriter::write() if exist,
+     * otherwise fallback to TranslationWriter::writeTranslations() call
+     * to avoid BC breaks
+     *
+     * @param MessageCatalogue $catalogue
+     * @param $format
+     * @param array $options
+     */
+    private function writeTranslations(MessageCatalogue $catalogue, $format, $options = array())
+    {
+        if (method_exists($this->writer, 'write')) {
+            $this->writer->write($catalogue, $format, $options);
+        } else {
+            // This method is deprecated since 3.4, maintained to avoid BC breaks
+            $this->writer->writeTranslations($catalogue, $format, $options);
+        }
     }
 }
