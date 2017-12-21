@@ -214,7 +214,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * This method calls the new TranslationWriter::write() if exist,
      * otherwise fallback to TranslationWriter::writeTranslations() call
-     * to avoid BC breaks
+     * to avoid BC breaks.
      *
      * @param MessageCatalogue $catalogue
      * @param $format
