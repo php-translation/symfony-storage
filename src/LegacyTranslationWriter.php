@@ -12,28 +12,28 @@
 namespace Translation\SymfonyStorage;
 
 use Symfony\Component\Translation\MessageCatalogue;
-use Symfony\Component\Translation\Reader\TranslationReader;
+use Symfony\Component\Translation\Writer\TranslationWriter;
 
 /**
- * This loader is just a legacy wrapper for Symfony TranslationReader
+ * This writer is just a legacy wrapper for Symfony TranslationWriter
  * and provide a BC layer for Symfony 4.
  *
  * @author Victor Bocharsky <bocharsky.bw@gmail.com>
  */
-class LegacyTranslationLoader implements TranslationLoader
+class LegacyTranslationWriter
 {
     /**
-     * @var TranslationReader
+     * @var TranslationWriter
      */
-    private $reader;
+    private $writer;
 
-    public function __construct(TranslationReader $reader)
+    public function __construct(TranslationWriter $writer)
     {
-        $this->reader = $reader;
+        $this->writer = $writer;
     }
 
-    public function loadMessages($directory, MessageCatalogue $catalogue)
+    public function write(MessageCatalogue $catalogue, $format, $options = [])
     {
-        $this->reader->read($directory, $catalogue);
+        $this->writer->writeTranslations($catalogue, $format, $options);
     }
 }

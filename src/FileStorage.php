@@ -16,6 +16,7 @@ use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Reader\TranslationReader;
 use Symfony\Component\Translation\Writer\TranslationWriter;
+use Symfony\Component\Translation\Writer\TranslationWriterInterface;
 use Translation\Common\Model\Message;
 use Translation\Common\Storage;
 use Translation\Common\TransferableStorage;
@@ -28,7 +29,7 @@ use Translation\Common\TransferableStorage;
 final class FileStorage implements Storage, TransferableStorage
 {
     /**
-     * @var TranslationWriter
+     * @var TranslationWriterInterface|LegacyTranslationWriter
      */
     private $writer;
 
@@ -60,6 +61,10 @@ final class FileStorage implements Storage, TransferableStorage
      */
     public function __construct(TranslationWriter $writer, $loader, array $dir, array $options = [])
     {
+        // Create a legacy writer which is a wrapper for TranslationWriter
+        if (!$writer instanceof TranslationWriterInterface) {
+            $writer = new LegacyTranslationWriter($writer);
+        }
         // Create a legacy loader which is a wrapper for TranslationReader
         if ($loader instanceof TranslationReader) {
             $loader = new LegacyTranslationLoader($loader);
@@ -164,7 +169,7 @@ final class FileStorage implements Storage, TransferableStorage
             $path = (string) $resource;
             if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
                 $options['path'] = str_replace($matches[0], '', $path);
-                $this->writeTranslations($catalogue, $matches[1], $options);
+                $this->writer->write($catalogue, $matches[1], $options);
                 $written = true;
             }
         }
@@ -176,7 +181,7 @@ final class FileStorage implements Storage, TransferableStorage
 
         $options['path'] = reset($this->dir);
         $format = isset($options['default_output_format']) ? $options['default_output_format'] : 'xlf';
-        $this->writeTranslations($catalogue, $format, $options);
+        $this->writer->write($catalogue, $format, $options);
     }
 
     /**
@@ -209,24 +214,5 @@ final class FileStorage implements Storage, TransferableStorage
         }
 
         $this->catalogues[$locale] = $currentCatalogue;
-    }
-
-    /**
-     * This method calls the new TranslationWriter::write() if exist,
-     * otherwise fallback to TranslationWriter::writeTranslations() call
-     * to avoid BC breaks.
-     *
-     * @param MessageCatalogue $catalogue
-     * @param string           $format
-     * @param array            $options
-     */
-    private function writeTranslations(MessageCatalogue $catalogue, $format, array $options)
-    {
-        if (method_exists($this->writer, 'write')) {
-            $this->writer->write($catalogue, $format, $options);
-        } else {
-            // This method is deprecated since 3.4, maintained to avoid BC breaks
-            $this->writer->writeTranslations($catalogue, $format, $options);
-        }
     }
 }
