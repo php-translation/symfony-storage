@@ -2,6 +2,21 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 0.4.0
+
+### Added
+
+- Introduced `LegacyTranslationReader` and `LegacyTranslationWriter` to provide BC support for Symfony 2.7 to 3.3.
+
+### Changed
+
+- Travis config.
+
+### Removed
+
+- Removed type annotation for first parameter of `FileStorage::__construct`. Type checks will be done with if-statements 
+to support legacy code.  
+
 ## 0.3.3
 
 ### Added
