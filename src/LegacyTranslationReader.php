@@ -12,7 +12,6 @@
 namespace Translation\SymfonyStorage;
 
 use Symfony\Component\Translation\MessageCatalogue;
-use Symfony\Component\Translation\Reader\TranslationReaderInterface;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
 
 /**
@@ -21,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
  *
  * @author Victor Bocharsky <bocharsky.bw@gmail.com>
  */
-final class LegacyTranslationReader implements TranslationReaderInterface
+final class LegacyTranslationReader // implements Symfony\Component\Translation\Reader\TranslationReaderInterface
 {
     /**
      * @var TranslationLoader
@@ -30,7 +29,7 @@ final class LegacyTranslationReader implements TranslationReaderInterface
 
     public function __construct($loader)
     {
-        if (!$loader instanceof SymfonyTranslationLoader) {
+        if (!$loader instanceof TranslationLoader) {
             throw new \LogicException(sprintf('PHP-Translation/SymfonyStorage does not support a TranslationReader of type "%s".', get_class($loader)));
         }
         $this->loader = $loader;

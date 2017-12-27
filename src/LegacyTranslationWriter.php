@@ -13,7 +13,6 @@ namespace Translation\SymfonyStorage;
 
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Writer\TranslationWriter;
-use Symfony\Component\Translation\Writer\TranslationWriterInterface;
 
 /**
  * This writer is just a wrapper for Symfony TranslationWriter
@@ -21,7 +20,7 @@ use Symfony\Component\Translation\Writer\TranslationWriterInterface;
  *
  * @author Victor Bocharsky <bocharsky.bw@gmail.com>
  */
-final class LegacyTranslationWriter implements TranslationWriterInterface
+final class LegacyTranslationWriter // implements Symfony\Component\Translation\Writer\TranslationWriterInterface
 {
     private $writer;
 
