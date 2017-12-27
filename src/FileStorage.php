@@ -11,11 +11,9 @@
 
 namespace Translation\SymfonyStorage;
 
-use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader as SymfonyTranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
-use Symfony\Component\Translation\Reader\TranslationReader;
-use Symfony\Component\Translation\Writer\TranslationWriter;
+use Symfony\Component\Translation\Reader\TranslationReaderInterface;
 use Symfony\Component\Translation\Writer\TranslationWriterInterface;
 use Translation\Common\Model\Message;
 use Translation\Common\Storage;
@@ -29,14 +27,14 @@ use Translation\Common\TransferableStorage;
 final class FileStorage implements Storage, TransferableStorage
 {
     /**
-     * @var TranslationWriterInterface|LegacyTranslationWriter
+     * @var TranslationWriterInterface
      */
     private $writer;
 
     /**
-     * @var TranslationLoader|SymfonyTranslationLoader
+     * @var TranslationReaderInterface
      */
-    private $loader;
+    private $reader;
 
     /**
      * @var array directory path
@@ -49,28 +47,26 @@ final class FileStorage implements Storage, TransferableStorage
     private $options;
 
     /**
-     * @var MessageCatalogue[] Fetched catalogies
+     * @var MessageCatalogue[] Fetched catalogues
      */
     private $catalogues;
 
     /**
-     * @param TranslationWriter                                            $writer
-     * @param SymfonyTranslationLoader|TranslationLoader|TranslationReader $loader
-     * @param array                                                        $dir
-     * @param array                                                        $options
+     * @param TranslationWriterInterface $writer
+     * @param TranslationReaderInterface $reader
+     * @param array                      $dir
+     * @param array                      $options
      */
-    public function __construct(TranslationWriter $writer, $loader, array $dir, array $options = [])
+    public function __construct($writer, $reader, array $dir, array $options = [])
     {
-        // Create a legacy writer which is a wrapper for TranslationWriter
+        // Create a wrapper for legacy writer
         if (!$writer instanceof TranslationWriterInterface) {
             $writer = new LegacyTranslationWriter($writer);
         }
-        // Create a legacy loader which is a wrapper for TranslationReader
-        if ($loader instanceof TranslationReader) {
-            $loader = new LegacyTranslationLoader($loader);
-        }
-        if (!$loader instanceof SymfonyTranslationLoader && !$loader instanceof TranslationLoader) {
-            throw new \LogicException('Second parameter of FileStorage must be a Symfony translation loader or implement Translation\SymfonyStorage\TranslationLoader');
+
+        // Create a wrapper for legacy reader
+        if (!$reader instanceof TranslationReaderInterface) {
+            $reader = new LegacyTranslationReader($reader);
         }
 
         if (empty($dir)) {
@@ -83,7 +79,7 @@ final class FileStorage implements Storage, TransferableStorage
         }
 
         $this->writer = $writer;
-        $this->loader = $loader;
+        $this->reader = $reader;
         $this->dir = $dir;
         $this->options = $options;
     }
@@ -157,10 +153,10 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * Save catalogue back to file.
      *
-     * @param MessageCatalogue $catalogue
-     * @param string           $domain
+     * @param MessageCatalogueInterface $catalogue
+     * @param string                    $domain
      */
-    private function writeCatalogue(MessageCatalogue $catalogue, $locale, $domain)
+    private function writeCatalogue(MessageCatalogueInterface $catalogue, $locale, $domain)
     {
         $resources = $catalogue->getResources();
         $options = $this->options;
@@ -209,7 +205,7 @@ final class FileStorage implements Storage, TransferableStorage
         $currentCatalogue = new MessageCatalogue($locale);
         foreach ($dirs as $path) {
             if (is_dir($path)) {
-                $this->loader->loadMessages($path, $currentCatalogue);
+                $this->reader->read($path, $currentCatalogue);
             }
         }
 

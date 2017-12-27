@@ -15,20 +15,22 @@ use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 
 /**
- * This writer is just a legacy wrapper for Symfony TranslationWriter
- * and provide a BC layer for Symfony 4.
+ * This writer is just a wrapper for Symfony TranslationWriter
+ * and provide a BC layer for Symfony 2.7 to 3.3.
  *
  * @author Victor Bocharsky <bocharsky.bw@gmail.com>
  */
-class LegacyTranslationWriter
+final class LegacyTranslationWriter // implements Symfony\Component\Translation\Writer\TranslationWriterInterface
 {
-    /**
-     * @var TranslationWriter
-     */
     private $writer;
 
-    public function __construct(TranslationWriter $writer)
+    public function __construct($writer)
     {
+        // If not Translation writer from sf 2.7 to 3.3
+        if (!$writer instanceof TranslationWriter) {
+            throw new \LogicException(sprintf('PHP-Translation/SymfonyStorage does not support a TranslationWriter of type "%s".', get_class($writer)));
+        }
+
         $this->writer = $writer;
     }
 
