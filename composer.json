@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.4 || ^4.0",
-        "symfony/framework-bundle": "^2.7 || ^3.0 || ^4.0"
+        "symfony/framework-bundle": "^2.7.39 || ^3.0 || ^4.0"
     },
     "autoload": {
         "psr-4": {
