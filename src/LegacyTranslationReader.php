@@ -39,6 +39,4 @@ final class LegacyTranslationReader // implements Symfony\Component\Translation\
     {
         $this->loader->loadMessages($directory, $catalogue);
     }
-
-
 }

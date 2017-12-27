@@ -52,10 +52,10 @@ final class FileStorage implements Storage, TransferableStorage
     private $catalogues;
 
     /**
-     * @param TranslationWriterInterface  $writer
-     * @param TranslationReaderInterface  $reader
-     * @param array                       $dir
-     * @param array                       $options
+     * @param TranslationWriterInterface $writer
+     * @param TranslationReaderInterface $reader
+     * @param array                      $dir
+     * @param array                      $options
      */
     public function __construct($writer, $reader, array $dir, array $options = [])
     {
