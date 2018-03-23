@@ -38,7 +38,11 @@ class SymfonyPort
         foreach ($messages->all($domain) as $source => $target) {
             $translation = $dom->createElement('unit');
             $translation->setAttribute('id', strtr(substr(base64_encode(hash('sha256', $source, true)), 0, 7), '/+', '._'));
-            $translation->setAttribute('name', $source);
+            $name = $source;
+            if (strlen($source) > 80) {
+                $name = substr(md5($source), -7);
+            }
+            $translation->setAttribute('name', $name);
             $metadata = $messages->getMetadata($source, $domain);
 
             // Add notes section
