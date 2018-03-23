@@ -16,6 +16,7 @@ use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Reader\TranslationReaderInterface;
 use Symfony\Component\Translation\Writer\TranslationWriterInterface;
 use Translation\Common\Model\Message;
+use Translation\Common\Model\MessageInterface;
 use Translation\Common\Storage;
 use Translation\Common\TransferableStorage;
 
@@ -98,7 +99,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function create(Message $m)
+    public function create(MessageInterface $m)
     {
         $catalogue = $this->getCatalogue($m->getLocale());
         if (!$catalogue->defines($m->getKey(), $m->getDomain())) {
@@ -110,7 +111,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function update(Message $m)
+    public function update(MessageInterface $m)
     {
         $catalogue = $this->getCatalogue($m->getLocale());
         $catalogue->set($m->getKey(), $m->getTranslation(), $m->getDomain());
