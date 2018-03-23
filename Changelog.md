@@ -2,6 +2,13 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 0.5.0
+
+### Added 
+
+- Support for php-translation/common: 0.3
+- Added the "name" attribute on the "unit" node for XLIFF 2.0. 
+
 ## 0.4.0
 
 ### Added
