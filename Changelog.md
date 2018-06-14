@@ -2,6 +2,12 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 1.0.0
+
+### Added
+
+- Support for php-translation/common: 1.0
+
 ## 0.5.0
 
 ### Added 
