@@ -12,11 +12,8 @@
 namespace Translation\SymfonyStorage;
 
 use Symfony\Component\Translation\Dumper\XliffFileDumper;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageCatalogue;
-use Symfony\Component\Translation\Util\XliffDumper;
-use Symfony\Component\Translation\Util\XliffExtractor;
-use Translation\SymfonyStorage\Loader\XliffLoader;
-
 /**
  * Utility class to convert between a MessageCatalogue and XLIFF file content.
  *
@@ -35,11 +32,10 @@ final class XliffConverter
      */
     public static function contentToCatalogue($content, $locale, $domain)
     {
-        $loader = new XliffLoader(new XliffExtractor());
-        $catalogue = new MessageCatalogue($locale);
-        $loader->extractFromContent($content, $catalogue, $domain);
+        $file = sys_get_temp_dir().'/'.uniqid('xliff', true);
+        file_put_contents($file, $content);
 
-        return $catalogue;
+        return (new XliffFileLoader())->load($file, $locale, $domain);
     }
 
     /**
@@ -51,13 +47,12 @@ final class XliffConverter
      */
     public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
     {
-        $dumper = new XliffFileDumper(new XliffDumper());
 
         if (!array_key_exists('xliff_version', $options)) {
             // Set default value for xliff version.
             $options['xliff_version'] = '2.0';
         }
 
-        return $dumper->formatCatalogue($catalogue, $domain, $options);
+        return (new XliffFileDumper())->formatCatalogue($catalogue, $domain, $options);
     }
 }
