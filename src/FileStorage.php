@@ -58,18 +58,8 @@ final class FileStorage implements Storage, TransferableStorage
      * @param array                      $dir
      * @param array                      $options
      */
-    public function __construct($writer, $reader, array $dir, array $options = [])
+    public function __construct(TranslationWriterInterface $writer, TranslationReaderInterface $reader, array $dir, array $options = [])
     {
-        // Create a wrapper for legacy writer
-        if (!$writer instanceof TranslationWriterInterface) {
-            $writer = new LegacyTranslationWriter($writer);
-        }
-
-        // Create a wrapper for legacy reader
-        if (!$reader instanceof TranslationReaderInterface) {
-            $reader = new LegacyTranslationReader($reader);
-        }
-
         if (empty($dir)) {
             throw new \LogicException('Third parameter of FileStorage cannot be empty');
         }

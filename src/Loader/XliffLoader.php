@@ -11,25 +11,27 @@
 
 namespace Translation\SymfonyStorage\Loader;
 
-use Nyholm\NSA;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
-use Symfony\Component\Translation\Loader\XliffFileLoader;
+use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
-use Translation\SymfonyStorage\Loader\Port\SymfonyPort;
+use Symfony\Component\Translation\Util\XliffExtractor;
+use Symfony\Component\Translation\Util\XliffUtils;
 
 /**
- * This class is an ugly hack to allow loading Xliff from string content.
+ * Make sure we can load Xliff file content. Symfony does only support loading form files.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class XliffLoader extends XliffFileLoader
+class XliffLoader implements LoaderInterface
 {
-    /**
-     * @var SymfonyPort|null
-     */
-    private $sfPort;
+    private $extractor;
+
+    public function __construct(XliffExtractor $extractor)
+    {
+        $this->extractor = $extractor;
+    }
 
     /**
      * {@inheritdoc}
@@ -68,33 +70,14 @@ class XliffLoader extends XliffFileLoader
             throw new InvalidResourceException(sprintf('Unable to load data: %s', $e->getMessage()), $e->getCode(), $e);
         }
 
-        if (method_exists($this, 'getVersionNumber')) {
-            $xliffVersion = NSA::invokeMethod($this, 'getVersionNumber', $dom);
-            NSA::invokeMethod($this, 'validateSchema', $xliffVersion, $dom, NSA::invokeMethod($this, 'getSchema', $xliffVersion));
-        } else {
-            // Symfony 2.7
-            if (null === $this->sfPort) {
-                $this->sfPort = new SymfonyPort();
-            }
-            $xliffVersion = $this->sfPort->getVersionNumber($dom);
-        }
+        $xliffVersion = XliffUtils::getVersionNumber($dom);
 
         if ('1.2' === $xliffVersion) {
-            if (method_exists($this, 'extractXliff1')) {
-                NSA::invokeMethod($this, 'extractXliff1', $dom, $catalogue, $domain);
-            } else {
-                if (null === $this->sfPort) {
-                    $this->sfPort = new SymfonyPort();
-                }
-                $this->sfPort->extractXliff1($dom, $catalogue, $domain);
-            }
+            $this->extractor->extractXliff1($dom, $catalogue, $domain);
         }
 
         if ('2.0' === $xliffVersion) {
-            if (null === $this->sfPort) {
-                $this->sfPort = new SymfonyPort();
-            }
-            $this->sfPort->extractXliff2($dom, $catalogue, $domain);
+            $this->extractor->extractXliff2($dom, $catalogue, $domain);
         }
     }
 

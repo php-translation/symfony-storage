@@ -11,8 +11,10 @@
 
 namespace Translation\SymfonyStorage;
 
+use Symfony\Component\Translation\Dumper\XliffFileDumper;
 use Symfony\Component\Translation\MessageCatalogue;
-use Translation\SymfonyStorage\Dumper\XliffDumper;
+use Symfony\Component\Translation\Util\XliffDumper;
+use Symfony\Component\Translation\Util\XliffExtractor;
 use Translation\SymfonyStorage\Loader\XliffLoader;
 
 /**
@@ -33,7 +35,7 @@ final class XliffConverter
      */
     public static function contentToCatalogue($content, $locale, $domain)
     {
-        $loader = new XliffLoader();
+        $loader = new XliffLoader(new XliffExtractor());
         $catalogue = new MessageCatalogue($locale);
         $loader->extractFromContent($content, $catalogue, $domain);
 
@@ -49,7 +51,7 @@ final class XliffConverter
      */
     public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
     {
-        $dumper = new XliffDumper();
+        $dumper = new XliffFileDumper(new XliffDumper());
 
         if (!array_key_exists('xliff_version', $options)) {
             // Set default value for xliff version.
