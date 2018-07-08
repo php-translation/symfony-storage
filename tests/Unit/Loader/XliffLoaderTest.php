@@ -14,6 +14,7 @@ namespace Translation\SymfonyStorage\Tests\Unit\Loader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\MessageCatalogue;
+use Symfony\Component\Translation\Util\XliffExtractor;
 use Translation\SymfonyStorage\Loader\XliffLoader;
 
 /**
@@ -26,13 +27,13 @@ class XliffLoaderTest extends TestCase
      */
     public function testEmptyContent()
     {
-        $loader = new XliffLoader();
+        $loader = new XliffLoader(new XliffExtractor());
         $loader->extractFromContent(' ', new MessageCatalogue('en'), 'messages');
     }
 
     public function testInvalidContent()
     {
-        $loader = new XliffLoader();
+        $loader = new XliffLoader(new XliffExtractor());
 
         try {
             $loader->extractFromContent('Foobar', new MessageCatalogue('en'), 'messages');
@@ -50,7 +51,7 @@ class XliffLoaderTest extends TestCase
     {
         $content = file_get_contents(__DIR__.'/../../Fixtures/single-file/messages.en.xlf');
         $catalogue = new MessageCatalogue('en');
-        (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
+        (new XliffLoader(new XliffExtractor()))->extractFromContent($content, $catalogue, 'messages');
         $this->assertTrue($catalogue->defines('test_0'));
         $this->assertTrue($catalogue->defines('test_1'));
     }
@@ -79,7 +80,7 @@ class XliffLoaderTest extends TestCase
 XML;
 
         $catalogue = new MessageCatalogue('en');
-        (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
+        (new XliffLoader(new XliffExtractor()))->extractFromContent($content, $catalogue, 'messages');
         $this->assertTrue($catalogue->defines('key0'));
         $this->assertTrue($catalogue->defines('key1'));
     }
@@ -89,7 +90,7 @@ XML;
         $content = file_get_contents(__DIR__.'/../../Fixtures/meta.en.xlf');
 
         $catalogue = new MessageCatalogue('en');
-        (new XliffLoader())->extractFromContent($content, $catalogue, 'messages');
+        (new XliffLoader(new XliffExtractor()))->extractFromContent($content, $catalogue, 'messages');
         $this->assertTrue($catalogue->defines('foo'));
         $metadata = $catalogue->getMetadata('foo');
         $this->assertNotEmpty($metadata);
@@ -110,7 +111,7 @@ XML;
     {
         $file = __DIR__.'/../../Fixtures/meta.en.xlf';
 
-        $catalogue = (new XliffLoader())->load($file, 'en', 'messages');
+        $catalogue = (new XliffLoader(new XliffExtractor()))->load($file, 'en', 'messages');
         $this->assertTrue($catalogue->defines('foo'));
         $metadata = $catalogue->getMetadata('foo');
         $this->assertNotEmpty($metadata);

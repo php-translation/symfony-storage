@@ -11,12 +11,11 @@
     "require": {
         "php": "^5.5 || ^7.0",
         "php-translation/common": "^1.0",
-        "symfony/translation": "^2.7 || ^3.0 || ^4.0",
-        "nyholm/nsa": "^1.1"
+        "symfony/translation": "^4.2"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.4 || ^4.0",
-        "symfony/framework-bundle": "^2.7.39 || ^3.0 || ^4.0"
+        "symfony/framework-bundle": "^4.2"
     },
     "autoload": {
         "psr-4": {
