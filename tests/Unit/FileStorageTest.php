@@ -36,14 +36,6 @@ class FileStorageTest extends TestCase
     /**
      * @expectedException \LogicException
      */
-    public function testConstructorInvalidLoader()
-    {
-        new FileStorage(new TranslationWriter(), new TranslationWriter(), ['foo']);
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
     public function testConstructorEmptyArray()
     {
         new FileStorage(new TranslationWriter(), $this->createTranslationLoader(), []);
