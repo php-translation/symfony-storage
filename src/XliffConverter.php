@@ -14,6 +14,7 @@ namespace Translation\SymfonyStorage;
 use Symfony\Component\Translation\Dumper\XliffFileDumper;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageCatalogue;
+
 /**
  * Utility class to convert between a MessageCatalogue and XLIFF file content.
  *
@@ -47,7 +48,6 @@ final class XliffConverter
      */
     public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
     {
-
         if (!array_key_exists('xliff_version', $options)) {
             // Set default value for xliff version.
             $options['xliff_version'] = '2.0';
