@@ -33,13 +33,6 @@ class FileStorageTest extends TestCase
         $this->assertInstanceOf(FileStorage::class, $storage);
     }
 
-    public function testConstructorInvalidLoader()
-    {
-        $this->expectException(\LogicException::class);
-
-        new FileStorage(new TranslationWriter(), new TranslationWriter(), ['foo']);
-    }
-
     public function testConstructorEmptyArray()
     {
         $this->expectException(\LogicException::class);
