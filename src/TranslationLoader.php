@@ -14,6 +14,8 @@ namespace Translation\SymfonyStorage;
 use Symfony\Component\Translation\MessageCatalogue;
 
 /**
+ * @deprecated Will be removed in 2.0. Please use Symfony\Component\Translation\Reader\TranslationReaderInterface.
+ *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
 interface TranslationLoader
