@@ -2,6 +2,16 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
 
+## 1.0.1
+
+### Fixed
+
+- The `LegacyTranslationReader` should also check for`Translation\SymfonyStorage\TranslationLoader`.
+
+### Changed
+
+- The `Translation\SymfonyStorage\TranslationLoader` was deprecated.
+
 ## 1.0.0
 
 ### Added

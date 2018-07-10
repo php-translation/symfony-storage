@@ -22,6 +22,9 @@ use Symfony\Component\Translation\Writer\TranslationWriter;
  */
 final class LegacyTranslationWriter // implements Symfony\Component\Translation\Writer\TranslationWriterInterface
 {
+    /**
+     * @var TranslationWriter (This is a concrete class, the interface did not exist until sf 3.4)
+     */
     private $writer;
 
     public function __construct($writer)
