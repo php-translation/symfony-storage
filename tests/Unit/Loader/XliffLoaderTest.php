@@ -21,11 +21,10 @@ use Translation\SymfonyStorage\Loader\XliffLoader;
  */
 class XliffLoaderTest extends TestCase
 {
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testEmptyContent()
     {
+        $this->expectException(InvalidResourceException::class);
+
         $loader = new XliffLoader();
         $loader->extractFromContent(' ', new MessageCatalogue('en'), 'messages');
     }
@@ -39,7 +38,7 @@ class XliffLoaderTest extends TestCase
         } catch (InvalidResourceException $e) {
             $invalidArgument = $e->getPrevious();
             $this->assertNotNull($invalidArgument);
-            $this->assertContains('[ERROR 4] Start tag expected', $invalidArgument->getMessage());
+            $this->assertStringContainsString('[ERROR 4] Start tag expected', $invalidArgument->getMessage());
 
             return;
         }
