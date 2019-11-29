@@ -26,10 +26,10 @@ class XliffDumperTest extends TestCase
         $dumper = new XliffDumper();
         $output = $dumper->formatCatalogue($catalogue, 'messages', ['xliff_version' => '1.2']);
 
-        $this->assertContains('<source>key0</source>', $output);
-        $this->assertContains('<target>trans0</target>', $output);
-        $this->assertContains('<source>key1</source>', $output);
-        $this->assertContains('<target>trans1</target>', $output);
+        $this->assertStringContainsString('<source>key0</source>', $output);
+        $this->assertStringContainsString('<target>trans0</target>', $output);
+        $this->assertStringContainsString('<source>key1</source>', $output);
+        $this->assertStringContainsString('<target>trans1</target>', $output);
     }
 
     public function testDumpXliff20Meta()
@@ -49,7 +49,7 @@ class XliffDumperTest extends TestCase
         $dumper = new XliffDumper();
         $output = $dumper->formatCatalogue($catalogue, 'messages', ['xliff_version' => '2.0']);
 
-        $this->assertContains('<note category="approved">yes</note>', $output);
-        $this->assertContains('<note category="state">new</note>', $output);
+        $this->assertStringContainsString('<note category="approved">yes</note>', $output);
+        $this->assertStringContainsString('<note category="state">new</note>', $output);
     }
 }

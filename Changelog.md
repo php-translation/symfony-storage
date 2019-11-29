@@ -1,6 +1,13 @@
 # Change Log
 
-The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release. 
+The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release.
+
+## Unreleased
+
+### Removed
+
+Support of php < 7.2
+Support of symfony < 3.4
 
 ## 1.0.1
 
@@ -20,10 +27,10 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 0.5.0
 
-### Added 
+### Added
 
 - Support for php-translation/common: 0.3
-- Added the "name" attribute on the "unit" node for XLIFF 2.0. 
+- Added the "name" attribute on the "unit" node for XLIFF 2.0.
 
 ## 0.4.0
 
@@ -37,8 +44,8 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ### Removed
 
-- Removed type annotation for first parameter of `FileStorage::__construct`. Type checks will be done with if-statements 
-to support legacy code.  
+- Removed type annotation for first parameter of `FileStorage::__construct`. Type checks will be done with if-statements
+to support legacy code.
 
 ## 0.3.3
 
@@ -63,11 +70,11 @@ to support legacy code.
 ### Added
 
 - Added more tests
-- Improved loader and dumper of Xliff2.0 meta 
+- Improved loader and dumper of Xliff2.0 meta
 
 ### Changed
 
-- We will create an output file if no file exists. 
+- We will create an output file if no file exists.
 - Xliff2.0 is default format
 
 ## 0.2.2
