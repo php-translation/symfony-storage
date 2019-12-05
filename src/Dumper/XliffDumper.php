@@ -65,9 +65,7 @@ final class XliffDumper extends XliffFileDumper
             return $this->sfPort->dumpXliff2($defaultLocale, $messages, $domain, $options);
         }
 
-        throw new InvalidArgumentException(
-            sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion)
-        );
+        throw new InvalidArgumentException(sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion));
     }
 
     /**
