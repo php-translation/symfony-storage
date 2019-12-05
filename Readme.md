@@ -15,6 +15,14 @@ and loader.
 composer require php-translation/symfony-storage
 ```
 
+### Tests
+
+Static code analysis (uses PHPStan) by running:
+
+```
+make static
+```
+
 ### Documentation
 
 Read our documentation at [http://php-translation.readthedocs.io](http://php-translation.readthedocs.io/en/latest/).

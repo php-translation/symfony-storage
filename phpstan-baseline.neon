@@ -1,0 +1,22 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Translation\\\\SymfonyStorage\\\\FileStorage\\:\\:writeCatalogue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/FileStorage.php
+
+		-
+			message: "#^Method Translation\\\\SymfonyStorage\\\\FileStorage\\:\\:writeCatalogue\\(\\) has parameter \\$locale with no typehint specified\\.$#"
+			count: 1
+			path: src/FileStorage.php
+
+		-
+			message: "#^Parameter \\#1 \\$catalogue of method Symfony\\\\Component\\\\Translation\\\\Writer\\\\TranslationWriterInterface\\:\\:write\\(\\) expects Symfony\\\\Component\\\\Translation\\\\MessageCatalogue, Symfony\\\\Component\\\\Translation\\\\MessageCatalogueInterface given\\.$#"
+			count: 2
+			path: src/FileStorage.php
+
+		-
+			message: "#^Method Translation\\\\SymfonyStorage\\\\FileStorage\\:\\:loadCatalogue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/FileStorage.php
+
