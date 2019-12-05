@@ -4,10 +4,11 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
-### Removed
+## 1.1.0
 
-Support of php < 7.2
-Support of symfony < 3.4
+Remove support of php < 7.2
+Remove support of symfony < 3.4
+Add support for symfony ^5.O
 
 ## 1.0.1
 
