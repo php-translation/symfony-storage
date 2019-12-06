@@ -52,19 +52,13 @@ final class FileStorage implements Storage, TransferableStorage
      */
     private $catalogues;
 
-    /**
-     * @param TranslationWriterInterface $writer
-     * @param TranslationReaderInterface $reader
-     * @param array                      $dir
-     * @param array                      $options
-     */
     public function __construct(TranslationWriterInterface $writer, TranslationReaderInterface $reader, array $dir, array $options = [])
     {
         if (empty($dir)) {
             throw new \LogicException('Third parameter of FileStorage cannot be empty');
         }
 
-        if (!array_key_exists('xliff_version', $options)) {
+        if (!\array_key_exists('xliff_version', $options)) {
             // Set default value for xliff version.
             $options['xliff_version'] = '2.0';
         }
@@ -141,13 +135,7 @@ final class FileStorage implements Storage, TransferableStorage
         }
     }
 
-    /**
-     * Save catalogue back to file.
-     *
-     * @param MessageCatalogueInterface $catalogue
-     * @param string                    $domain
-     */
-    private function writeCatalogue(MessageCatalogueInterface $catalogue, $locale, $domain)
+    private function writeCatalogue(MessageCatalogueInterface $catalogue, string $locale, string $domain): void
     {
         $resources = $catalogue->getResources();
         $options = $this->options;
@@ -171,12 +159,7 @@ final class FileStorage implements Storage, TransferableStorage
         $this->writer->write($catalogue, $format, $options);
     }
 
-    /**
-     * @param string $locale
-     *
-     * @return MessageCatalogue
-     */
-    private function getCatalogue($locale)
+    private function getCatalogue(string $locale): MessageCatalogue
     {
         if (empty($this->catalogues[$locale])) {
             $this->loadCatalogue($locale, $this->dir);
@@ -185,13 +168,7 @@ final class FileStorage implements Storage, TransferableStorage
         return $this->catalogues[$locale];
     }
 
-    /**
-     * Load catalogue from files.
-     *
-     * @param string $locale
-     * @param array  $dirs
-     */
-    private function loadCatalogue($locale, array $dirs)
+    private function loadCatalogue(string $locale, array $dirs): void
     {
         $currentCatalogue = new MessageCatalogue($locale);
         foreach ($dirs as $path) {

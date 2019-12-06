@@ -24,14 +24,8 @@ final class XliffConverter
 {
     /**
      * Create a catalogue from the contents of a XLIFF file.
-     *
-     * @param string $content
-     * @param string $locale
-     * @param string $domain
-     *
-     * @return MessageCatalogue
      */
-    public static function contentToCatalogue($content, $locale, $domain)
+    public static function contentToCatalogue(string $content, string $locale, string $domain): MessageCatalogue
     {
         $file = sys_get_temp_dir().'/'.uniqid('xliff', true);
         file_put_contents($file, $content);
@@ -39,16 +33,9 @@ final class XliffConverter
         return (new XliffFileLoader())->load($file, $locale, $domain);
     }
 
-    /**
-     * @param MessageCatalogue $catalogue
-     * @param string           $domain
-     * @param array            $options
-     *
-     * @return string
-     */
-    public static function catalogueToContent(MessageCatalogue $catalogue, $domain, array $options = [])
+    public static function catalogueToContent(MessageCatalogue $catalogue, string $domain, array $options = []): string
     {
-        if (!array_key_exists('xliff_version', $options)) {
+        if (!\array_key_exists('xliff_version', $options)) {
             // Set default value for xliff version.
             $options['xliff_version'] = '2.0';
         }
