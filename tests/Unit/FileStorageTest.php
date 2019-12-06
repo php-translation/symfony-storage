@@ -12,14 +12,13 @@
 namespace Translation\SymfonyStorage\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Reader\TranslationReader;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Translation\Common\Model\Message;
 use Translation\SymfonyStorage\FileStorage;
-use Translation\SymfonyStorage\Loader\XliffLoader;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -30,13 +29,6 @@ class FileStorageTest extends TestCase
     {
         $storage = new FileStorage(new TranslationWriter(), $this->createTranslationLoader(), ['foo']);
         $this->assertInstanceOf(FileStorage::class, $storage);
-    }
-
-    public function testConstructorInvalidLoader()
-    {
-        $this->expectException(\LogicException::class);
-
-        new FileStorage(new TranslationWriter(), new TranslationWriter(), ['foo']);
     }
 
     public function testConstructorEmptyArray()
@@ -94,7 +86,7 @@ class FileStorageTest extends TestCase
             );
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, ['foo', $this->getFixturePath()]);
 
         $storage->create(new Message('key', 'messages', 'en', 'Translation'));
@@ -107,7 +99,7 @@ class FileStorageTest extends TestCase
             ->getMock();
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $this->assertEquals('Bazbar', $storage->get('en', 'messages', 'test_1')->getTranslation());
@@ -137,7 +129,7 @@ class FileStorageTest extends TestCase
             );
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $storage->update(new Message('key', 'messages', 'en', 'Translation'));
@@ -162,7 +154,7 @@ class FileStorageTest extends TestCase
             );
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $storage->delete('en', 'messages', 'test_0');
@@ -186,7 +178,7 @@ class FileStorageTest extends TestCase
             );
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
         $catalogue = new MessageCatalogue('en', ['messages' => ['test_4711' => 'foobar']]);
 
@@ -200,7 +192,7 @@ class FileStorageTest extends TestCase
             ->getMock();
 
         $loader = $this->createTranslationLoader();
-        $loader->addLoader('xlf', new XliffLoader());
+        $loader->addLoader('xlf', new XliffFileLoader());
         $storage = new FileStorage($writer, $loader, [$this->getFixturePath()]);
 
         $catalogue = new MessageCatalogue('en');
@@ -223,15 +215,11 @@ class FileStorageTest extends TestCase
     }
 
     /**
-     * @return TranslationLoader|TranslationReader
+     * @return TranslationReader
      */
     private function createTranslationLoader()
     {
-        if (class_exists(TranslationReader::class)) {
-            return new TranslationReader();
-        }
-
-        return new TranslationLoader();
+        return new TranslationReader();
     }
 
     private function getMethodNameToWriteTranslations()
