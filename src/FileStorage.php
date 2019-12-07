@@ -78,7 +78,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function get($locale, $domain, $key)
+    public function get(string $locale, string $domain, string $key): MessageInterface
     {
         $catalogue = $this->getCatalogue($locale);
         $translation = $catalogue->get($key, $domain);
@@ -89,7 +89,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function create(MessageInterface $m)
+    public function create(MessageInterface $m): void
     {
         $catalogue = $this->getCatalogue($m->getLocale());
         if (!$catalogue->defines($m->getKey(), $m->getDomain())) {
@@ -101,7 +101,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function update(MessageInterface $m)
+    public function update(MessageInterface $m): void
     {
         $catalogue = $this->getCatalogue($m->getLocale());
         $catalogue->set($m->getKey(), $m->getTranslation(), $m->getDomain());
@@ -111,7 +111,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function delete($locale, $domain, $key)
+    public function delete(string $locale, string $domain, string $key): void
     {
         $catalogue = $this->getCatalogue($locale);
         $messages = $catalogue->all($domain);
@@ -124,7 +124,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function export(MessageCatalogueInterface $catalogue)
+    public function export(MessageCatalogueInterface $catalogue, array $options = []): void
     {
         $locale = $catalogue->getLocale();
         $catalogue->addCatalogue($this->getCatalogue($locale));
@@ -133,7 +133,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function import(MessageCatalogueInterface $catalogue)
+    public function import(MessageCatalogueInterface $catalogue, array $options = []): void
     {
         $domains = $catalogue->getDomains();
         foreach ($domains as $domain) {
