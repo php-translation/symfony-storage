@@ -6,9 +6,9 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 1.1.0
 
-Remove support of php < 7.2
-Remove support of symfony < 3.4
-Add support for symfony ^5.O
+- Remove support of PHP < 7.2
+- Remove support of Symfony < 3.4
+- Add support for Symfony ^5.0
 
 ## 1.0.1
 
