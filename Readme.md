@@ -17,7 +17,7 @@ composer require php-translation/symfony-storage
 
 ### Tests
 
-Static code analysis (uses PHPStan) by running:
+Static code analysis (fix code style, and test using PHPStan) by running:
 
 ```
 make static
