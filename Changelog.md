@@ -6,7 +6,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 2.0.0
 
-- Remove legacy layer used to support Symfony ^2.0
+- Drop `symfony/translation` < 3.4 support by removing legacy layer
 - Add strict type hinting
 
 ## 1.1.0
@@ -112,5 +112,4 @@ to support legacy code.
 ## 0.1.0
 
 Init release
-
 
