@@ -4,6 +4,11 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.0.0
+
+- Remove legacy layer used to support Symfony ^2.0
+- Add strict type hinting
+
 ## 1.1.0
 
 - Remove support of PHP < 7.2
