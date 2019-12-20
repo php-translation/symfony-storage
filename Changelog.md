@@ -4,6 +4,11 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.0.0
+
+- Drop `symfony/translation` < 3.4 support by removing legacy layer
+- Add strict type hinting
+
 ## 1.1.0
 
 - Remove support of PHP < 7.2
@@ -107,5 +112,4 @@ to support legacy code.
 ## 0.1.0
 
 Init release
-
 
