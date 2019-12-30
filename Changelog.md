@@ -6,7 +6,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 2.1.0
 
-- Remove support of `php-translation/common` < 3.0
+- Adding support for `php-translation/common` 3.0
 
 ## 2.0.0
 
@@ -116,4 +116,3 @@ to support legacy code.
 ## 0.1.0
 
 Init release
-
