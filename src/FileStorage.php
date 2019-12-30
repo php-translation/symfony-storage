@@ -72,7 +72,7 @@ final class FileStorage implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function get(string $locale, string $domain, string $key): MessageInterface
+    public function get(string $locale, string $domain, string $key): ?MessageInterface
     {
         $catalogue = $this->getCatalogue($locale);
         $translation = $catalogue->get($key, $domain);
