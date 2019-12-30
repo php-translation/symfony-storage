@@ -4,6 +4,10 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.1.0
+
+- Adding support for `php-translation/common` 3.0
+
 ## 2.0.0
 
 - Drop `symfony/translation` < 3.4 support by removing legacy layer
@@ -112,4 +116,3 @@ to support legacy code.
 ## 0.1.0
 
 Init release
-
