@@ -140,9 +140,16 @@ final class FileStorage implements Storage, TransferableStorage
         $resources = $catalogue->getResources();
         $options = $this->options;
         $written = false;
+        $intlDomainSuffix = '(\\' . MessageCatalogueInterface::INTL_DOMAIN_SUFFIX . ')';
+        $searchPatternWithIntl = '|/'.$domain . $intlDomainSuffix . '\.'.$locale.'\.([a-z]+)$|';
+        $searchPatternWithoutIntl = str_replace($intlDomainSuffix, '', $searchPatternWithIntl);
         foreach ($resources as $resource) {
             $path = (string) $resource;
-            if (preg_match('|/'.$domain.'\.'.$locale.'\.([a-z]+)$|', $path, $matches)) {
+            if (preg_match($searchPatternWithIntl, $path, $matches)) {
+                $options['path'] = str_replace($matches[0], '', $path);
+                $this->writer->write($catalogue, $matches[2], $options);
+                $written = true;
+            } elseif (preg_match($searchPatternWithoutIntl, $path, $matches)) {
                 $options['path'] = str_replace($matches[0], '', $path);
                 $this->writer->write($catalogue, $matches[1], $options);
                 $written = true;
