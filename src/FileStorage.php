@@ -140,7 +140,8 @@ final class FileStorage implements Storage, TransferableStorage
         $resources = $catalogue->getResources();
         $options = $this->options;
         $written = false;
-        $intlDomainSuffix = '(\\' . MessageCatalogueInterface::INTL_DOMAIN_SUFFIX . ')';
+        // $intlDomainSuffix = '(\\' . MessageCatalogueInterface::INTL_DOMAIN_SUFFIX . ')'; # not available in older Symfony versions
+        $intlDomainSuffix = '(\\' . '+intl-icu' . ')';
         $searchPatternWithIntl = '|/'.$domain . $intlDomainSuffix . '\.'.$locale.'\.([a-z]+)$|';
         $searchPatternWithoutIntl = str_replace($intlDomainSuffix, '', $searchPatternWithIntl);
         foreach ($resources as $resource) {
