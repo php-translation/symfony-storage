@@ -2,5 +2,5 @@ parameters:
 	ignoreErrors:
 		-
 			message: "#^Parameter \\#1 \\$catalogue of method Symfony\\\\Component\\\\Translation\\\\Writer\\\\TranslationWriterInterface\\:\\:write\\(\\) expects Symfony\\\\Component\\\\Translation\\\\MessageCatalogue, Symfony\\\\Component\\\\Translation\\\\MessageCatalogueInterface given\\.$#"
-			count: 2
+			count: 3
 			path: src/FileStorage.php
