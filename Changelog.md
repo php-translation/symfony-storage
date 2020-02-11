@@ -4,6 +4,10 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.2.0
+
+- Adding support for translation files with intl domain suffix
+
 ## 2.1.0
 
 - Adding support for `php-translation/common` 3.0
