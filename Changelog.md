@@ -4,6 +4,10 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.3.0
+
+- Adding support for PHP 8
+
 ## 2.2.0
 
 - Adding support for translation files with intl domain suffix
