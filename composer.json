@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "php-translation/common": "^3.0 || ^4.0",
+        "php-translation/common": "^3.0",
         "symfony/translation": "^3.4 || ^4.2 || ^5.0"
     },
     "require-dev": {
