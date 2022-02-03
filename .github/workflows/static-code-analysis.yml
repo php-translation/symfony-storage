@@ -19,7 +19,7 @@ jobs:
       - name: Run PHP-CS-Fixer
         uses: docker://jakzal/phpqa:php7.3-alpine
         with:
-            args: php-cs-fixer fix --dry-run --diff-format udiff -vvv
+            args: php-cs-fixer fix --dry-run -vvv
 
   roave-bc-check:
     name: Roave BC Check
