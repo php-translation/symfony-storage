@@ -1,3 +1,4 @@
+/.php-cs-fixer.cache
 /build/
 /composer.lock
 /phpspec.yml
