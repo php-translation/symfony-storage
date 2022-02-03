@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.4', '8.0', '8.1']
+        php: [ '8.0', '8.1']
         strategy: [ 'highest' ]
         sf_version: ['5.*', '6.*']
         include:
@@ -21,8 +21,12 @@ jobs:
             - php: 7.4
               sf_version: '4.*'
             - php: 7.4
+              sf_version: '5.*'
+            - php: 7.4
+              sf_version: '5.*'
               strategy: 'lowest'
             - php: 8.1
+              sf_version: '6.*'
               strategy: 'lowest'
 
     steps:
