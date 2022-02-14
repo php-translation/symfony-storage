@@ -4,6 +4,18 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## Unreleased
 
+## 2.3.1
+
+### Added
+
+* Allow Symfony 6 by @bocharsky-bw in https://github.com/php-translation/symfony-storage/pull/57
+
+### Fixed
+
+* Update branch alias by @github-actions in https://github.com/php-translation/symfony-storage/pull/56
+* CSFixer diff-format is always udiff since 3.0 by @rvanlaak in https://github.com/php-translation/symfony-storage/pull/58
+* Update CI PHP and Symfony versions by @rvanlaak in https://github.com/php-translation/symfony-storage/pull/59
+
 ## 2.3.0
 
 - Adding support for PHP 8
