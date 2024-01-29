@@ -36,6 +36,11 @@ class XliffConverterTest extends TestCase
         $catalogue->add(['foobar' => 'bar']);
         $content = XliffConverter::catalogueToContent($catalogue, 'messages');
 
-        $this->assertRegExp('|foobar|', $content);
+        // If PHPUnit 9.0 or higher is used, use assertMatchesRegularExpression() instead
+        if (method_exists($this, 'assertMatchesRegularExpression')) {
+            $this->assertMatchesRegularExpression('/foobar/', $content);
+        } else {
+            $this->assertRegExp('|foobar|', $content);
+        }
     }
 }
