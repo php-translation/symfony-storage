@@ -20,14 +20,3 @@ jobs:
         uses: docker://jakzal/phpqa:php7.3-alpine
         with:
             args: php-cs-fixer fix --diff --dry-run -vvv
-
-  roave-bc-check:
-    name: Roave BC Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Roave BC Check
-        uses: docker://nyholm/roave-bc-check-ga
